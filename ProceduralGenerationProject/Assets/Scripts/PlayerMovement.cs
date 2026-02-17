@@ -27,7 +27,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //movement.normalized to prevent diagonal speed increase
+        //Movement.normalized to prevent diagonal speed increase
         rb.linearVelocity = movement.normalized * speed;
     }
 }
