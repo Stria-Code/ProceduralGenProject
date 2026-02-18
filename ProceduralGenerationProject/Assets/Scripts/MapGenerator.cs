@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Tilemaps;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField] RawImage miniMap;
     //Dictionary for map tiles
     Dictionary <int, GameObject> tileSet;
 
     //Dictonary for groups of tiles
     Dictionary <int, GameObject> tileGroups;
 
+    Texture2D texture;
     //Tiles
     [SerializeField] GameObject grass;
     [SerializeField] GameObject water;
     [SerializeField] GameObject resource;
 
+    [SerializeField] int seed;
     //Grid Size
-    int width = 300;
-    int height = 250;
+    int width = 50;
+    int height = 50;
 
-    List<List <int>> noiseGrid = new List<List<int>>();
-    List<List <GameObject>> tileGrid = new List<List<GameObject>>();
+    int [,] noiseGrid;
 
-    float magnification = 25.0f; //Size
+    [SerializeField] float magnification = 25.0f; //Size
     int xOffset = 0; //Reduce = move terrain left / Increase = move terrain right
     int yOffset = 0; //Reduce = move terrain down / Increase = move terrain up
 
@@ -37,8 +40,22 @@ public class MapGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        xOffset = Random.Range(-10000, 10000);
-        yOffset = Random.Range(-10000, 10000);
+        System.Random random;
+
+        if (seed != 0)
+        {
+            random = new System.Random(seed);
+        }
+        else
+        {
+            random = new System.Random();
+        }
+
+        noiseGrid = new int[width, height];
+        xOffset = random.Next(-1000, 1000);
+        yOffset = random.Next(-1000, 1000);
+        Debug.Log("Seed: " + xOffset);
+
 
         CreateTileSet();
         CreateGroups();
@@ -48,10 +65,14 @@ public class MapGenerator : MonoBehaviour
 
         BuildMapFromGrid();
 
+        miniMap.texture = Map.CreateTexture(noiseGrid);
+
         SpawnPlayer();
     }
-
-
+    
+    //Smart Cookie
+    bool CheckTile(int x, int y, int tileID) => noiseGrid[x, y] == tileID;
+   
     void CreateTileSet()
     {
         //Add tiles to the map dictionary - all available tiles are added here
@@ -83,7 +104,7 @@ public class MapGenerator : MonoBehaviour
     { 
         //Generate perlin noise value from coordinates input
         float perlinNoise = Mathf.PerlinNoise((x - xOffset) / magnification, (y - yOffset) / magnification);
-
+                              
 
         //Thresholds for tile spawns
         if (perlinNoise < 0.25f) return 1; //water
@@ -105,22 +126,17 @@ public class MapGenerator : MonoBehaviour
 
         //Gives its position
         tile.transform.localPosition = new Vector3(x, y, 0);
-
-        //Store the gameobject in the list
-        tileGrid[x].Add(tile);
     }
 
     void CreateNoiseGrid()
     {
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width; x++) // going through each row
         {
-            noiseGrid.Add(new List<int> {});
-
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++) // going through each column
             {
                 int tileID = GetIdUsingPerlin(x, y);
-                noiseGrid[x].Add(tileID);
+                noiseGrid[x, y] = tileID;
             }
         }
     }
@@ -134,10 +150,7 @@ public class MapGenerator : MonoBehaviour
             int y = Random.Range(0, height);
 
             //Check if the tile is land
-            if (noiseGrid[x][y] == 0)
-            {
-                return new Vector2Int(x, y);
-            }
+            if (CheckTile(x, y, 0)) return new Vector2Int(x, y);
         }
 
         //Center of map - backup positioning
@@ -148,11 +161,9 @@ public class MapGenerator : MonoBehaviour
     {
         for(int x = 0; x < width; x++)
         {
-            tileGrid.Add(new List<GameObject>{});
-
             for(int y = 0; y < height; y++)
             {
-                CreateTile(noiseGrid[x][y], x, y);
+                CreateTile(noiseGrid[x, y], x, y);
             }
         }
     }
@@ -187,7 +198,7 @@ public class MapGenerator : MonoBehaviour
                 if (newX < 0 || newY < 0 || newX >= width || newY >= height) continue;
 
                 //If this tile has not been checked and is of the same type
-                if(!visited[newX, newY] && noiseGrid[newX][newY] == tileID)
+                if(!visited[newX, newY] && CheckTile(newX, newY, tileID))
                 {
                     //Mark it as visited and add it to the queue to look at its neighbours later
                     visited[newX, newY] = true;
@@ -209,7 +220,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 //Check to see if a tile has not been visited and is of the required type
-                if (!visited[x,y] && noiseGrid[x][y] == tileID)
+                if (!visited[x,y] && CheckTile(x, y, tileID))
                 {
                     //Use floodfill algorithm to get the full cluster
                     List<Vector2Int> cluster = FloodFill(x, y, tileID, visited);
@@ -220,7 +231,7 @@ public class MapGenerator : MonoBehaviour
                         //If its not, replace the cluster with another specified type of tiles
                         foreach(Vector2Int tile in cluster)
                         {
-                            noiseGrid[tile.x][tile.y] = replacementID;
+                            noiseGrid[tile.x, tile.y] = replacementID;
                         }
                     }
                 }
