@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 16719021}
   - component: {fileID: 16719022}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -302,8 +302,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 519420032}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &144278952
@@ -459,6 +458,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -582,8 +582,22 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 144278951}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d7bf585a5293c46b177d957fbc1d20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 144278951}
+  map: {fileID: 847160523}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +795,7 @@ GameObject:
   - component: {fileID: 847160524}
   - component: {fileID: 847160523}
   m_Layer: 0
-  m_Name: Map
+  m_Name: WorldMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -803,8 +817,13 @@ MonoBehaviour:
   grass: {fileID: 3598866319663329938, guid: 3f78cb9e2b3b9d54787fe2f87cfab875, type: 3}
   water: {fileID: 5251426512328698457, guid: 3e395003a5fb719459fb0b56c0befdf5, type: 3}
   resource: {fileID: 5569534562409085423, guid: 32cdfde18922b904f992417aa6d6c723, type: 3}
-  seed: 0
-  magnification: 25
+  topMapEdge: {fileID: 5381818000645799464, guid: 857b54790c348a6438a90ea7ecd22c23, type: 3}
+  bottomMapEdge: {fileID: 7869838833110800369, guid: eba01071e72898a49a2b0486f3311edb, type: 3}
+  leftMapEdge: {fileID: 3076464352202988189, guid: 910b8218c152b2340b4200b24a8e0881, type: 3}
+  rightMapEdge: {fileID: 2756705094897877942, guid: 0747b275f2f38b1499a0ec79ba7da43b, type: 3}
+  seed: 19072004
+  mapSize: 2
+  magnification: 30
   player: {fileID: 144278951}
 --- !u!4 &847160524
 Transform:
@@ -826,7 +845,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 619394802}
+  - {fileID: 519420032}
+  - {fileID: 774618361}
   - {fileID: 144278951}
   - {fileID: 847160524}
-  - {fileID: 774618361}
   - {fileID: 94103919}

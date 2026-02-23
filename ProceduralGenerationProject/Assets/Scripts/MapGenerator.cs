@@ -20,11 +20,27 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] GameObject grass;
     [SerializeField] GameObject water;
     [SerializeField] GameObject resource;
+    [SerializeField] GameObject topMapEdge;
+    [SerializeField] GameObject bottomMapEdge;
+    [SerializeField] GameObject leftMapEdge;
+    [SerializeField] GameObject rightMapEdge;
+
 
     [SerializeField] int seed;
+
+
+    enum MapSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+
+    [SerializeField] private MapSize mapSize;
+
     //Grid Size
-    int width = 50;
-    int height = 50;
+    public int width { get; private set; }
+    public int height { get; private set; }
 
     int [,] noiseGrid;
 
@@ -51,9 +67,9 @@ public class MapGenerator : MonoBehaviour
             random = new System.Random();
         }
 
-        noiseGrid = new int[width, height];
-        xOffset = random.Next(-1000, 1000);
-        yOffset = random.Next(-1000, 1000);
+        noiseGrid = MapSizeCreator();
+        xOffset = random.Next(-10000, 10000);
+        yOffset = random.Next(-10000, 10000);
         Debug.Log("Seed: " + xOffset);
 
 
@@ -62,12 +78,46 @@ public class MapGenerator : MonoBehaviour
         CreateNoiseGrid();
 
         CreateClusters(2, 20, 200, 0);
+        FindAndUpdateEdges();
 
         BuildMapFromGrid();
 
         miniMap.texture = Map.CreateTexture(noiseGrid);
 
         SpawnPlayer();
+    }
+
+    int[,] MapSizeCreator()
+    {
+        switch (mapSize)
+        {
+            case MapSize.Small:
+
+                width = 100;
+                height = 100;
+                break;
+
+            case MapSize.Medium:
+
+                width = 300;
+                height = 300;
+                break;
+
+            case MapSize.Large:
+
+                width = 500;
+                height = 500;
+                break;
+
+            default:
+
+                width = 100;
+                height = 100;
+                break;
+        
+        }
+
+        return new int[width, height];
     }
     
     //Smart Cookie
@@ -80,6 +130,10 @@ public class MapGenerator : MonoBehaviour
         tileSet.Add(0, grass);
         tileSet.Add(1, water);
         tileSet.Add(2, resource);
+        tileSet.Add(3, topMapEdge);
+        tileSet.Add(4, bottomMapEdge);
+        tileSet.Add(5, leftMapEdge);
+        tileSet.Add(6, rightMapEdge);
     }
 
     void CreateGroups()
@@ -237,6 +291,43 @@ public class MapGenerator : MonoBehaviour
                 }
             }
 
+        }
+    }
+
+    void FindAndUpdateEdges()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2Int currentTile = new Vector2Int(x, y);
+
+                //If neighbours don't exist
+
+                if (currentTile.y + 1 >= height)
+                {
+                    //3 - tileID for topMapEdges
+                    noiseGrid[currentTile.x, currentTile.y] = 3;
+                }
+
+                if (currentTile.y - 1 < 0)
+                {
+                    //4 - tileID for bottomMapEdges
+                    noiseGrid[currentTile.x, currentTile.y] = 4;
+                }
+
+                if (currentTile.x - 1 < 0)
+                {
+                    //5 - tileID for leftMapEdges
+                    noiseGrid[currentTile.x, currentTile.y] = 5;
+                }
+
+                if (currentTile.x + 1 >= width)
+                {
+                    //6 - tileID for rightMapEdges
+                    noiseGrid[currentTile.x, currentTile.y] = 6;
+                }
+            }
         }
     }
 
