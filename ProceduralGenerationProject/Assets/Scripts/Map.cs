@@ -4,24 +4,8 @@ using UnityEngine.UI;
 
 static public class Map
 { 
-    static Color GetColourForTile(int tileID)
-    {
-        switch (tileID)
-        {
-            case 0:
-                return Color.green;
 
-            case 1:
-                return Color.lightBlue;
-
-            case 2:
-                return Color.brown;
-
-            default:
-                return Color.white;
-        }
-    }
-    static public Texture2D CreateTexture(int[,] gridToDraw)
+    static public Texture2D CreateTexture(Tile[,] gridToDraw)
     {
         Texture2D texture = new Texture2D(gridToDraw.GetLength(0), gridToDraw.GetLength(1));
 
@@ -29,7 +13,7 @@ static public class Map
         {
             for (int y = 0; y < gridToDraw.GetLength(1); y++)
             {
-                texture.SetPixel(x, y, GetColourForTile(gridToDraw[x, y]));
+                texture.SetPixel(x, y, gridToDraw[x, y].colour);
             }
         }
 

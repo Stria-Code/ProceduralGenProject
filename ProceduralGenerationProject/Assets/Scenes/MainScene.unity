@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 16719021}
   - component: {fileID: 16719022}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,9 +280,8 @@ GameObject:
   m_Component:
   - component: {fileID: 144278951}
   - component: {fileID: 144278955}
-  - component: {fileID: 144278954}
-  - component: {fileID: 144278953}
   - component: {fileID: 144278952}
+  - component: {fileID: 144278956}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -302,8 +301,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 519420032}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &144278952
@@ -333,65 +331,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &144278953
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 144278950}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
---- !u!114 &144278954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 144278950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5366649cb0d753a4cab60d53767d29d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
 --- !u!212 &144278955
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -447,6 +386,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &144278956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144278950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34822833552baf45bdcd25783a743bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  map: {fileID: 847160523}
+  speed: 5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +412,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -582,8 +536,22 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 144278951}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d7bf585a5293c46b177d957fbc1d20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 144278951}
+  map: {fileID: 847160523}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,7 +654,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &774618358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -781,7 +749,7 @@ GameObject:
   - component: {fileID: 847160524}
   - component: {fileID: 847160523}
   m_Layer: 0
-  m_Name: Map
+  m_Name: WorldMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -800,12 +768,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miniMap: {fileID: 16719022}
-  grass: {fileID: 3598866319663329938, guid: 3f78cb9e2b3b9d54787fe2f87cfab875, type: 3}
-  water: {fileID: 5251426512328698457, guid: 3e395003a5fb719459fb0b56c0befdf5, type: 3}
-  resource: {fileID: 5569534562409085423, guid: 32cdfde18922b904f992417aa6d6c723, type: 3}
-  seed: 0
-  magnification: 25
+  tiles:
+  - {fileID: 11400000, guid: 67a384b26c010ba439884d7475d406d9, type: 2}
+  - {fileID: 11400000, guid: e7faaf979677e404d82b0b13db8cb6d5, type: 2}
+  - {fileID: 11400000, guid: 030eb76ddba06dd45b27139dabb82c17, type: 2}
+  - {fileID: 11400000, guid: c09c678fe9d7a6944a784042481665a9, type: 2}
+  defaultTile: {fileID: 5251426512328698457, guid: 3e395003a5fb719459fb0b56c0befdf5, type: 3}
   player: {fileID: 144278951}
+  seed: 0
+  mapSize: 0
+  smallWidth: 100
+  smallHeight: 100
+  mediumWidth: 300
+  mediumHeight: 300
+  largeWidth: 500
+  largeHeight: 500
+  magnification: 25
 --- !u!4 &847160524
 Transform:
   m_ObjectHideFlags: 0
@@ -826,7 +804,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 619394802}
+  - {fileID: 519420032}
+  - {fileID: 774618361}
   - {fileID: 144278951}
   - {fileID: 847160524}
-  - {fileID: 774618361}
   - {fileID: 94103919}
