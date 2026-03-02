@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
-  ID: 1
-  name: tile_x98_y18
+  ID: 0
+  name: tile_x98_y90
   walkable: 0
-  colour: {r: 0, g: 0.26072955, b: 1, a: 1}
+  colour: {r: 0.15566039, g: 0.37518868, b: 1, a: 1}

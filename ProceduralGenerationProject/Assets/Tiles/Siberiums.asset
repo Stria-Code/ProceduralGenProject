@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
   m_Name: Siberiums
   m_EditorClassIdentifier: 
-  ID: 2
-  name: tile_x95_y38
+  ID: 4
+  name: Siberiums
   walkable: 1
   colour: {r: 1, g: 0.42514166, b: 0, a: 1}

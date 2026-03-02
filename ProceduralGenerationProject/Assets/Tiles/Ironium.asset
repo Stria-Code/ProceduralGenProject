@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
-  m_Name: Shroud
+  m_Name: Ironium
   m_EditorClassIdentifier: 
-  ID: 3
-  name: Shroud
-  walkable: 0
-  colour: {r: 0, g: 0, b: 0, a: 1}
+  ID: 5
+  name: Ironium
+  walkable: 1
+  colour: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}

@@ -69,13 +69,17 @@ public class MapGenerator : MonoBehaviour
 
        // CreateGroups();
         CreateNoiseGrid();
+        ApplyResources();
 
-        ConfigureClusters(2, 20, 200, tiles[0]);
+        ConfigureClusters(tiles[4], 20, 200, tiles[0]);
+        ConfigureClusters(tiles[5], 20, 200, tiles[0]);
+
 
         //BackUP cluster creation for tiles if none available on the map
         //***
-        CreateClusters(tiles[2], tiles[0], tiles[2]);
-        CreateClusters(tiles[1], tiles[0], tiles[1]);
+        CreateClusters(tiles[1], tiles[0]);
+        CreateClusters(tiles[4], tiles[0]);
+        CreateClusters(tiles[5], tiles[0]);
 
         //***
 
@@ -121,7 +125,7 @@ public class MapGenerator : MonoBehaviour
         return new Tile[width, height];
     }
 
-    bool CheckIfInBoundaries(int x, int y)
+    public bool CheckIfInBoundaries(int x, int y)
     {
         if (x < 0 || y < 0 || x >= width || y >= height) return false;
 
@@ -146,19 +150,6 @@ public class MapGenerator : MonoBehaviour
         }
     }*/
 
-    Tile GetIdUsingPerlin(int x, int y)
-    { 
-        //Generate perlin noise value from coordinates input
-        float perlinNoise = Mathf.PerlinNoise((x - xOffset) / magnification, (y - yOffset) / magnification);
-                              
-        
-
-        //Thresholds for tile spawns
-        if (perlinNoise < 0.25f) return tiles[1]; //water
-        if (perlinNoise < 0.75f) return tiles[0]; //land
-        return tiles[2];
-    }
-
     void CreateTile(Tile tile, int x, int y)
     {
         //GameObject tileGroup = tileGroups[tile.ID];
@@ -176,14 +167,46 @@ public class MapGenerator : MonoBehaviour
         tileObj.transform.localPosition = new Vector3(x, y, 0);
     }
 
+    Tile CreateMainTerrain(int x, int y)
+    {
+        //Generate perlin noise value from coordinates input
+        float terrainNoise = Mathf.PerlinNoise((x - xOffset) / magnification, (y - yOffset) / magnification);
+
+        //Thresholds for tile spawns
+        if (terrainNoise < 0.05f) return tiles[1]; //deepwater
+        else if (terrainNoise < 0.10f) return tiles[0]; //water
+        return tiles[2]; //land
+    }
+
     void CreateNoiseGrid()
     {
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
-        for (int x = 0; x < width; x++) // going through each row
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++) // going through each column
+            for (int y = 0; y < height; y++)
             {
-                noiseGrid[x, y] = GetIdUsingPerlin(x, y);
+                noiseGrid[x, y] = CreateMainTerrain(x, y);
+            }
+        }
+    }
+
+    void ApplyResources()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Tile baseTile = noiseGrid[x, y];
+
+                if (baseTile.ID == tiles[0].ID || baseTile.ID == tiles[1].ID) continue;
+
+                float resourceNoise = Mathf.PerlinNoise((x + xOffset) / magnification,(y + yOffset) / magnification);
+
+                if (baseTile.ID == tiles[2].ID)
+                {
+                    if (resourceNoise < 0.30f) noiseGrid[x, y] = tiles[4];
+                    else if (resourceNoise < 0.60f) noiseGrid[x, y] = tiles[5];
+                }
             }
         }
     }
@@ -197,7 +220,7 @@ public class MapGenerator : MonoBehaviour
             int y = Random.Range(0, height);
 
             //Check if the tile is land
-            if (noiseGrid[x, y].ID == 0) return new Vector2Int(x, y);
+            if (noiseGrid[x, y].ID == tiles[2].ID) return new Vector2Int(x, y);
         }
 
         //Center of map - backup positioning
@@ -257,7 +280,7 @@ public class MapGenerator : MonoBehaviour
         return cluster;
     }
 
-    void ConfigureClusters(int tileID, int minSize, int maxSize, Tile replacementTile)
+    void ConfigureClusters(Tile clusterTile, int minSize, int maxSize, Tile replacementTile)
     {
         bool[,] visited = new bool[width, height];
 
@@ -267,10 +290,10 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 //Check to see if a tile has not been visited and is of the required type
-                if (!visited[x,y] && noiseGrid[x, y].ID == tileID)
+                if (!visited[x,y] && noiseGrid[x, y].ID == clusterTile.ID)
                 {
                     //Use floodfill algorithm to get the full cluster
-                    List<Vector2Int> cluster = FloodFill(x, y, tileID, visited);
+                    List<Vector2Int> cluster = FloodFill(x, y, clusterTile.ID, visited);
 
                     //Check if its within the required sizes
                     if (cluster.Count < minSize || cluster.Count > maxSize)
@@ -305,9 +328,9 @@ public class MapGenerator : MonoBehaviour
         return doesExist;
     }
 
-    void CreateClusters(Tile tileToFind, Tile tileToReplace, Tile replacementTile)
+    void CreateClusters(Tile replacementTile, Tile tileToReplace)
     {
-        if (!FindTile(tileToFind))
+        if (!FindTile(replacementTile))
         {
             bool hasCreated = false;
 
@@ -318,7 +341,7 @@ public class MapGenerator : MonoBehaviour
                 int y = Random.Range(0, height);
 
                 //Check if the tile is land
-                if (!hasCreated && noiseGrid[x, y].ID == 0)
+                if (!hasCreated && noiseGrid[x, y].ID == tileToReplace.ID)
                 {
                     noiseGrid[x, y] = replacementTile;
 

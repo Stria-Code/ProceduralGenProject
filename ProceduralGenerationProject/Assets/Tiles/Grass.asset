@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: 
-  ID: 0
-  name: tile_x98_y98
+  ID: 2
+  name: Grass
   walkable: 1
   colour: {r: 0.0989748, g: 0.49056602, b: 0.071733706, a: 1}
