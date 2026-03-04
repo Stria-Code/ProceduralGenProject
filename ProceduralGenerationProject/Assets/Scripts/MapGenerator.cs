@@ -34,6 +34,16 @@ public class MapGenerator : MonoBehaviour
         Large
     }
 
+    enum TileType
+    {
+        Grass,
+        Water,
+        DeepWater,
+        Shroud,
+        Siberiums,
+        Ironium
+    }
+
     //Grid Size
     public int width { get; private set; }
     public int height { get; private set; }
@@ -71,15 +81,15 @@ public class MapGenerator : MonoBehaviour
         CreateNoiseGrid();
         ApplyResources();
 
-        ConfigureClusters(tiles[4], 20, 200, tiles[0]);
-        ConfigureClusters(tiles[5], 20, 200, tiles[0]);
+        ConfigureClusters(tiles[(int)TileType.Siberiums], 20, 200, tiles[(int)TileType.Grass]);
+        ConfigureClusters(tiles[(int)TileType.Ironium], 20, 200, tiles[(int)TileType.Grass]);
 
 
         //BackUP cluster creation for tiles if none available on the map
         //***
-        CreateClusters(tiles[1], tiles[0]);
-        CreateClusters(tiles[4], tiles[0]);
-        CreateClusters(tiles[5], tiles[0]);
+        CreateClusters(tiles[(int)TileType.Water], tiles[(int)TileType.Grass]);
+        CreateClusters(tiles[(int)TileType.Siberiums], tiles[(int)TileType.Grass]);
+        CreateClusters(tiles[(int)TileType.Ironium], tiles[(int)TileType.Grass]);
 
         //***
 
@@ -173,9 +183,9 @@ public class MapGenerator : MonoBehaviour
         float terrainNoise = Mathf.PerlinNoise((x - xOffset) / magnification, (y - yOffset) / magnification);
 
         //Thresholds for tile spawns
-        if (terrainNoise < 0.05f) return tiles[1]; //deepwater
-        else if (terrainNoise < 0.10f) return tiles[0]; //water
-        return tiles[2]; //land
+        if (terrainNoise < 0.10f) return tiles[(int)TileType.Water]; //deepwater
+        else if (terrainNoise < 0.20f) return tiles[(int)TileType.DeepWater]; //water
+        return tiles[(int)TileType.Grass]; //land
     }
 
     void CreateNoiseGrid()
@@ -198,14 +208,14 @@ public class MapGenerator : MonoBehaviour
             {
                 Tile baseTile = noiseGrid[x, y];
 
-                if (baseTile.ID == tiles[0].ID || baseTile.ID == tiles[1].ID) continue;
+                if (baseTile.ID == tiles[(int)TileType.DeepWater].ID || baseTile.ID == tiles[(int)TileType.Water].ID) continue;
 
                 float resourceNoise = Mathf.PerlinNoise((x + xOffset) / magnification,(y + yOffset) / magnification);
 
-                if (baseTile.ID == tiles[2].ID)
+                if (baseTile.ID == tiles[(int)TileType.Grass].ID)
                 {
-                    if (resourceNoise < 0.30f) noiseGrid[x, y] = tiles[4];
-                    else if (resourceNoise < 0.60f) noiseGrid[x, y] = tiles[5];
+                    if (resourceNoise < 0.05f) noiseGrid[x, y] = tiles[(int)TileType.Siberiums];
+                    else if (resourceNoise < 0.15f) noiseGrid[x, y] = tiles[(int)TileType.Ironium];
                 }
             }
         }
@@ -220,7 +230,7 @@ public class MapGenerator : MonoBehaviour
             int y = Random.Range(0, height);
 
             //Check if the tile is land
-            if (noiseGrid[x, y].ID == tiles[2].ID) return new Vector2Int(x, y);
+            if (noiseGrid[x, y].ID == tiles[(int)TileType.Grass].ID) return new Vector2Int(x, y);
         }
 
         //Center of map - backup positioning
@@ -310,6 +320,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    //Function to find if a certain tile exists anywhere on the map
     bool FindTile(Tile tile)
     {
         bool doesExist = false;
@@ -386,7 +397,7 @@ public class MapGenerator : MonoBehaviour
             {
                 if(x < 1 || y < 1 || x >= width - 1 || y >= height - 1)
                 {
-                    noiseGrid[x, y] = tiles[3];
+                    noiseGrid[x, y] = tiles[(int)TileType.Shroud];
                 }
             }
         }

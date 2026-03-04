@@ -396,10 +396,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 144278950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8677c48d7a7ac84bb4eddadfca30fbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 5366649cb0d753a4cab60d53767d29d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map: {fileID: 847160523}
+  map: {fileID: 847160525}
   speed: 5
 --- !u!61 &144278957
 BoxCollider2D:
@@ -598,7 +598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 144278951}
-  map: {fileID: 847160523}
+  map: {fileID: 847160525}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,7 +794,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 847160524}
-  - component: {fileID: 847160523}
+  - component: {fileID: 847160525}
   m_Layer: 0
   m_Name: WorldMap
   m_TagString: Untagged
@@ -802,37 +802,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &847160523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 847160522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5aef9a9e59e5bc4cbdfe9d038090cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  miniMap: {fileID: 16719022}
-  tiles:
-  - {fileID: 11400000, guid: e7faaf979677e404d82b0b13db8cb6d5, type: 2}
-  - {fileID: 11400000, guid: 1b016d304ce1c71499feb800be3c99e2, type: 2}
-  - {fileID: 11400000, guid: 67a384b26c010ba439884d7475d406d9, type: 2}
-  - {fileID: 11400000, guid: c09c678fe9d7a6944a784042481665a9, type: 2}
-  - {fileID: 11400000, guid: 030eb76ddba06dd45b27139dabb82c17, type: 2}
-  - {fileID: 11400000, guid: 9097ea4545358af4b87b515e1488024c, type: 2}
-  defaultTile: {fileID: 5251426512328698457, guid: a463076b373dad54a8117de4abeed2b5, type: 3}
-  player: {fileID: 144278951}
-  seed: 0
-  mapSize: 1
-  smallWidth: 100
-  smallHeight: 100
-  mediumWidth: 300
-  mediumHeight: 300
-  largeWidth: 500
-  largeHeight: 500
-  magnification: 25
 --- !u!4 &847160524
 Transform:
   m_ObjectHideFlags: 0
@@ -848,6 +817,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &847160525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847160522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5aef9a9e59e5bc4cbdfe9d038090cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniMap: {fileID: 16719022}
+  tiles:
+  - {fileID: 11400000, guid: 67a384b26c010ba439884d7475d406d9, type: 2}
+  - {fileID: 11400000, guid: 1b016d304ce1c71499feb800be3c99e2, type: 2}
+  - {fileID: 11400000, guid: e7faaf979677e404d82b0b13db8cb6d5, type: 2}
+  - {fileID: 11400000, guid: c09c678fe9d7a6944a784042481665a9, type: 2}
+  - {fileID: 11400000, guid: 030eb76ddba06dd45b27139dabb82c17, type: 2}
+  - {fileID: 11400000, guid: 9097ea4545358af4b87b515e1488024c, type: 2}
+  defaultTile: {fileID: 5251426512328698457, guid: 3e395003a5fb719459fb0b56c0befdf5, type: 3}
+  player: {fileID: 144278951}
+  seed: 0
+  mapSize: 1
+  smallWidth: 100
+  smallHeight: 100
+  mediumWidth: 300
+  mediumHeight: 300
+  largeWidth: 500
+  largeHeight: 500
+  magnification: 25
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

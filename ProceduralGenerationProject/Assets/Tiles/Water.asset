@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   ID: 0
-  name: tile_x98_y90
+  name: tile_x289_y296
   walkable: 0
-  colour: {r: 0.15566039, g: 0.37518868, b: 1, a: 1}
+  colour: {r: 0, g: 0.8170724, b: 1, a: 1}
