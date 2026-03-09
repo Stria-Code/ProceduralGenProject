@@ -22,11 +22,19 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] GameObject defaultTile;
     [SerializeField] Transform player;
 
+
+    //Adjustables in the inspector
     [SerializeField] int seed;
     [SerializeField] private MapSize mapSize;
     [SerializeField] private int smallWidth, smallHeight;
     [SerializeField] private int mediumWidth, mediumHeight;
     [SerializeField] private int largeWidth, largeHeight;
+    [SerializeField] private int radiusMinValue, raidusMaxValue;
+    [SerializeField] private int smallMapResMinAmount, smallMapResMaxAmount;
+    [SerializeField] private int medMapResMinAmount, medMapResMaxAmount;
+    [SerializeField] private int largeMapResMinAmount, largeMapResMaxAmount;
+
+    //Map Sizes
     enum MapSize
     {
         Small,
@@ -34,11 +42,12 @@ public class MapGenerator : MonoBehaviour
         Large
     }
 
+    //Tile Names
     enum TileType
     {
         Grass,
-        Water,
         DeepWater,
+        Water,
         Shroud,
         Siberiums,
         Ironium
@@ -57,12 +66,10 @@ public class MapGenerator : MonoBehaviour
     //Helper directions array
     static readonly Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
-
+    private System.Random random = new System.Random();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        System.Random random;
-
         if (seed != 0)
         {
             random = new System.Random(seed);
@@ -81,8 +88,9 @@ public class MapGenerator : MonoBehaviour
         CreateNoiseGrid();
         ApplyResources();
 
-        ConfigureClusters(tiles[(int)TileType.Siberiums], 20, 200, tiles[(int)TileType.Grass]);
-        ConfigureClusters(tiles[(int)TileType.Ironium], 20, 200, tiles[(int)TileType.Grass]);
+        ConfigureClusters(tiles[(int)TileType.Siberiums], 15, 300, tiles[(int)TileType.Grass]);
+        ConfigureClusters(tiles[(int)TileType.Ironium], 15, 300, tiles[(int)TileType.Grass]);
+        ConfigureClusters(tiles[(int)TileType.Water], 10, 5000, tiles[(int)TileType.Grass]);
 
 
         //BackUP cluster creation for tiles if none available on the map
@@ -183,8 +191,8 @@ public class MapGenerator : MonoBehaviour
         float terrainNoise = Mathf.PerlinNoise((x - xOffset) / magnification, (y - yOffset) / magnification);
 
         //Thresholds for tile spawns
-        if (terrainNoise < 0.10f) return tiles[(int)TileType.Water]; //deepwater
-        else if (terrainNoise < 0.20f) return tiles[(int)TileType.DeepWater]; //water
+        if (terrainNoise < 0.10f) return tiles[(int)TileType.DeepWater]; //deepwater
+        else if (terrainNoise < 0.20f) return tiles[(int)TileType.Water]; //water
         return tiles[(int)TileType.Grass]; //land
     }
 
@@ -200,25 +208,117 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /* void ApplyResources()
+     {
+         for (int x = 0; x < width; x++)
+         {
+             for (int y = 0; y < height; y++)
+             {
+                 Tile baseTile = noiseGrid[x, y];
+
+                 if (baseTile.ID == tiles[(int)TileType.DeepWater].ID || baseTile.ID == tiles[(int)TileType.Water].ID) continue;
+
+                 float resourceNoise = Mathf.PerlinNoise((x + xOffset) / magnification,(y + yOffset) / magnification);
+
+                 if (baseTile.ID == tiles[(int)TileType.Grass].ID)
+                 {
+                     if (resourceNoise < 0.05f) noiseGrid[x, y] = tiles[(int)TileType.Siberiums];
+                     else if (resourceNoise < 0.15f) noiseGrid[x, y] = tiles[(int)TileType.Ironium];
+                 }
+             }
+         }
+     }*/
+
+
     void ApplyResources()
     {
-        for (int x = 0; x < width; x++)
+        //Siberium deposits
+        List<Vector2Int> siberiumNodes = GenerateBestCandidatePoints(25, 50, tiles[(int)TileType.Grass]);
+
+        foreach (Vector2Int pos in siberiumNodes)
         {
-            for (int y = 0; y < height; y++)
+            int radius = random.Next(0, 8);
+            GrowResourceCluster(pos, tiles[(int)TileType.Siberiums], tiles[(int)TileType.Grass], 5);
+        }
+
+        //Ironium deposits
+        List<Vector2Int> ironiumNodes = GenerateBestCandidatePoints(18, 50, tiles[(int)TileType.Grass]);
+
+        foreach (Vector2Int pos in ironiumNodes)
+        {
+            int radius = random.Next(0, 8);
+            GrowResourceCluster(pos, tiles[(int)TileType.Ironium], tiles[(int)TileType.Grass], radius);
+        }
+    }
+
+    void GrowResourceCluster(Vector2Int center, Tile resource, Tile biomeToCheck, int radius)
+    {
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
             {
-                Tile baseTile = noiseGrid[x, y];
+                int nx = center.x + x;
+                int ny = center.y + y;
 
-                if (baseTile.ID == tiles[(int)TileType.DeepWater].ID || baseTile.ID == tiles[(int)TileType.Water].ID) continue;
+                if (!CheckIfInBoundaries(nx, ny)) continue;
 
-                float resourceNoise = Mathf.PerlinNoise((x + xOffset) / magnification,(y + yOffset) / magnification);
-
-                if (baseTile.ID == tiles[(int)TileType.Grass].ID)
+                if (noiseGrid[nx, ny].ID == biomeToCheck.ID)
                 {
-                    if (resourceNoise < 0.05f) noiseGrid[x, y] = tiles[(int)TileType.Siberiums];
-                    else if (resourceNoise < 0.15f) noiseGrid[x, y] = tiles[(int)TileType.Ironium];
+                    //Calculate the Euclidean distance - diagonal distance
+                    float distance = Mathf.Sqrt(x * x + y * y);
+
+                    //Only populate the space if the value is within the circle 
+                    if (distance <= radius && Random.value > 0.3f) //added a chance to not spawn tiles so they are distributed unevenly
+                    {
+                        noiseGrid[nx, ny] = resource;
+                    }
                 }
             }
         }
+    }
+
+    //Mitchells best candidate algorithm
+    List<Vector2Int> GenerateBestCandidatePoints(int count, int candidates, Tile biomeToCheck)
+    {
+        List<Vector2Int> points = new List<Vector2Int>();
+
+        //Starting point
+        points.Add(new Vector2Int(Random.Range(0, width), Random.Range(0, height)));
+
+        for (int i = 1; i < count; i++)
+        {
+            Vector2Int bestCandidate = Vector2Int.zero;
+            //-1f so the first candidate is always valid
+            float bestDistance = -1f;
+
+            for (int c = 0; c < candidates; c++)
+            {
+                int x = Random.Range(0, width);
+                int y = Random.Range(0, height);
+
+                if (noiseGrid[x, y].ID != biomeToCheck.ID) continue;
+
+                //maxValue so the first candidate is always valid
+                float minDist = float.MaxValue;
+
+                foreach (Vector2Int p in points)
+                {
+                    float distance = Vector2Int.Distance(new Vector2Int(x, y), p);
+                    if (distance < minDist) minDist = distance; //Now next check is gonna be distance < previous distance
+                }
+
+
+                if (minDist > bestDistance)
+                {
+                    bestDistance = minDist;
+                    bestCandidate = new Vector2Int(x, y);
+                }
+            }
+
+            points.Add(bestCandidate);
+        }
+
+        return points;
     }
 
     Vector2Int FindPlayerSpawnArea()
@@ -294,7 +394,6 @@ public class MapGenerator : MonoBehaviour
     {
         bool[,] visited = new bool[width, height];
 
-        //Check the whole map
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -329,7 +428,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (noiseGrid[x, y] == tile)
+                if (noiseGrid[x, y].ID == tile.ID)
                 {
                     doesExist = true;
                 }
