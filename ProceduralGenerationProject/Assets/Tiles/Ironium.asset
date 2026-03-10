@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Ironium
   m_EditorClassIdentifier: 
   ID: 5
-  name: Ironium
+  name: tile_x287_y34
   walkable: 1
   colour: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
+  minClusterRadius: 1
+  maxClusterRadius: 7
+  minTilesInCluser: 0
+  maxTilesInCluster: 0

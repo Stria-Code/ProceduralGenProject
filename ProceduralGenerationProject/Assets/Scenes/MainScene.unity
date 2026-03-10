@@ -847,6 +847,13 @@ MonoBehaviour:
   mediumHeight: 300
   largeWidth: 500
   largeHeight: 500
+  smallMapResMinAmount: 5
+  smallMapResMaxAmount: 10
+  medMapResMinAmount: 15
+  medMapResMaxAmount: 30
+  largeMapResMinAmount: 25
+  largeMapResMaxAmount: 50
+  candidatesToCheckForResourcePlacement: 50
   magnification: 25
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

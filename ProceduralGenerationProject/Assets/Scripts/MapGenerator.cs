@@ -24,15 +24,16 @@ public class MapGenerator : MonoBehaviour
 
 
     //Adjustables in the inspector
-    [SerializeField] int seed;
+    [SerializeField] int seed; 
     [SerializeField] private MapSize mapSize;
     [SerializeField] private int smallWidth, smallHeight;
     [SerializeField] private int mediumWidth, mediumHeight;
     [SerializeField] private int largeWidth, largeHeight;
-    [SerializeField] private int radiusMinValue, raidusMaxValue;
     [SerializeField] private int smallMapResMinAmount, smallMapResMaxAmount;
     [SerializeField] private int medMapResMinAmount, medMapResMaxAmount;
     [SerializeField] private int largeMapResMinAmount, largeMapResMaxAmount;
+    [SerializeField] private int candidatesToCheckForResourcePlacement;
+    [SerializeField] float magnification;
 
     //Map Sizes
     enum MapSize
@@ -59,9 +60,10 @@ public class MapGenerator : MonoBehaviour
 
     public Tile[,] noiseGrid { get; private set; }
 
-    [SerializeField] float magnification = 25.0f; //Size
     int xOffset = 0; //Reduce = move terrain left / Increase = move terrain right
     int yOffset = 0; //Reduce = move terrain down / Increase = move terrain up
+
+    int resMinAmount, resMaxAmount;
 
     //Helper directions array
     static readonly Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
@@ -118,24 +120,32 @@ public class MapGenerator : MonoBehaviour
 
                 width = smallWidth;
                 height = smallHeight;
+                resMinAmount = smallMapResMinAmount;
+                resMaxAmount = smallMapResMaxAmount;
                 break;
 
             case MapSize.Medium:
 
                 width = mediumWidth;
                 height = mediumHeight;
+                resMinAmount = medMapResMinAmount;
+                resMaxAmount= medMapResMaxAmount;
                 break;
 
             case MapSize.Large:
 
                 width = largeWidth;
                 height = largeHeight;
+                resMinAmount= largeMapResMinAmount;
+                resMaxAmount= largeMapResMaxAmount;
                 break;
 
             default:
 
                 width = 100;
                 height = 100;
+                resMinAmount = smallMapResMinAmount;
+                resMaxAmount = smallMapResMaxAmount;
                 break;
         
         }
@@ -232,21 +242,23 @@ public class MapGenerator : MonoBehaviour
 
     void ApplyResources()
     {
+        int resAmount = random.Next(resMinAmount, resMaxAmount);
+
         //Siberium deposits
-        List<Vector2Int> siberiumNodes = GenerateBestCandidatePoints(25, 50, tiles[(int)TileType.Grass]);
+        List<Vector2Int> siberiumNodes = GenerateBestCandidatePoints(resAmount, 50, tiles[(int)TileType.Grass]);
 
         foreach (Vector2Int pos in siberiumNodes)
         {
-            int radius = random.Next(0, 8);
-            GrowResourceCluster(pos, tiles[(int)TileType.Siberiums], tiles[(int)TileType.Grass], 5);
+            int radius = random.Next(tiles[(int)TileType.Siberiums].minClusterRadius, tiles[(int)TileType.Siberiums].maxClusterRadius);
+            GrowResourceCluster(pos, tiles[(int)TileType.Siberiums], tiles[(int)TileType.Grass], radius);
         }
 
         //Ironium deposits
-        List<Vector2Int> ironiumNodes = GenerateBestCandidatePoints(18, 50, tiles[(int)TileType.Grass]);
+        List<Vector2Int> ironiumNodes = GenerateBestCandidatePoints(resAmount, 50, tiles[(int)TileType.Grass]);
 
         foreach (Vector2Int pos in ironiumNodes)
         {
-            int radius = random.Next(0, 8);
+            int radius = random.Next(tiles[(int)TileType.Ironium].minClusterRadius, tiles[(int)TileType.Ironium].maxClusterRadius);
             GrowResourceCluster(pos, tiles[(int)TileType.Ironium], tiles[(int)TileType.Grass], radius);
         }
     }

@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Siberiums
   m_EditorClassIdentifier: 
   ID: 4
-  name: Siberiums
+  name: tile_x291_y278
   walkable: 1
   colour: {r: 1, g: 0.42514166, b: 0, a: 1}
+  minClusterRadius: 1
+  maxClusterRadius: 7
+  minTilesInCluser: 0
+  maxTilesInCluster: 0

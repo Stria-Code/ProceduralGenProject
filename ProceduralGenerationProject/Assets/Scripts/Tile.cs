@@ -7,4 +7,6 @@ public class Tile : ScriptableObject
     [SerializeField] public string name;
     [SerializeField] public bool walkable;
     [SerializeField] public Color colour;
+    [SerializeField] public int minClusterRadius, maxClusterRadius;
+    [SerializeField] public int minTilesInCluser, maxTilesInCluster;
 }
