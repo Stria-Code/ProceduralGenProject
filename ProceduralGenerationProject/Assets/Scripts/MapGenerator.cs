@@ -86,7 +86,6 @@ public class MapGenerator : MonoBehaviour
         yOffset = random.Next(-10000, 10000);
         Debug.Log("xOffset: " + xOffset + " , " + "yOffset " + yOffset);
 
-       // CreateGroups();
         CreateNoiseGrid();
         ApplyResources();
 
@@ -160,37 +159,15 @@ public class MapGenerator : MonoBehaviour
         return true;
     }
 
-    /*void CreateGroups()
-    {
-        //Create a new group in the inspector for each of the tile types
-        tileGroups = new Dictionary<int, GameObject>();
-
-        foreach (KeyValuePair<int, GameObject> key in tileSet)
-        {
-            //Create an empty parent object for this tile type
-            GameObject tileGroup = new GameObject(key.Value.name);
-
-            tileGroup.transform.parent = gameObject.transform;
-            tileGroup.transform.localPosition = new Vector3(0, 0, 0);
-
-            //Store it by tile ID
-            tileGroups.Add(key.Key, tileGroup);
-        }
-    }*/
-
     void CreateTile(Tile tile, int x, int y)
     {
-        //GameObject tileGroup = tileGroups[tile.ID];
-
-        //Creates a tile using the passed in tile ID to make out which type of tile it should create
-        //Groups it in the inspector with similar tiles
         GameObject tileObj = Instantiate(defaultTile);
         tileObj.GetComponent<SpriteRenderer>().color = tile.colour;
         tileObj.AddComponent<TileController>().tile = tile;
 
         //Inspector naming format for ease of access to the tile - coordinates mentioned in the name
-        tile.name = string.Format("tile_x{0}_y{1}", x, y);
-        tileObj.name= tile.name;
+        tileObj.name = string.Format("tile_x{0}_y{1}", x, y);
+
         //Gives its position
         tileObj.transform.localPosition = new Vector3(x, y, 0);
     }

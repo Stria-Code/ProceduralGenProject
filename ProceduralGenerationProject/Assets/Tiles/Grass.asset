@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Grass
   m_EditorClassIdentifier: 
   ID: 2
-  name: tile_x298_y298
+  name: Grass
   walkable: 1
   colour: {r: 0.046905186, g: 0.7169812, b: 0, a: 1}
+  minClusterRadius: 0
+  maxClusterRadius: 0
+  minTilesInCluser: 0
+  maxTilesInCluster: 0

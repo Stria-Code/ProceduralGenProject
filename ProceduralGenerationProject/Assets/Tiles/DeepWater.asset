@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: DeepWater
   m_EditorClassIdentifier: 
   ID: 1
-  name: tile_x86_y65
+  name: DeepWater
   walkable: 0
   colour: {r: 0, g: 0.020182133, b: 1, a: 1}
+  minClusterRadius: 0
+  maxClusterRadius: 0
+  minTilesInCluser: 0
+  maxTilesInCluster: 0
