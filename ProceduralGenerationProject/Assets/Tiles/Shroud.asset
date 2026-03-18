@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Shroud
   m_EditorClassIdentifier: 
   ID: 3
+  currentID: 0
   name: Shroud
   walkable: 0
-  colour: {r: 0, g: 0, b: 0, a: 1}
+  walkSpeed: 0
+  buildable: 
+  colour: {r: 0, g: 0, b: 0, a: 0.5}
   minClusterRadius: 0
   maxClusterRadius: 0
   minTilesInCluser: 0

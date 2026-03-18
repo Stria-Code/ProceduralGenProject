@@ -9,13 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
-  m_Name: Siberiums
+  m_Script: {fileID: 11500000, guid: a3c25fbad498f1f489976eaf7cb45f30, type: 3}
+  m_Name: MediumMap
   m_EditorClassIdentifier: 
-  ID: 4
-  currentID: 0
-  name: Siberiums
-  walkable: 1
-  walkSpeed: 0
-  buildable: 01000000
-  colour: {r: 1, g: 0.44076967, b: 0, a: 0.5}
+  width: 300
+  height: 300
+  minResAmount: 20
+  maxResAmount: 30

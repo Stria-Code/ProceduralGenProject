@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: DeepWater
   m_EditorClassIdentifier: 
   ID: 1
+  currentID: 0
   name: DeepWater
   walkable: 0
-  colour: {r: 0, g: 0.020182133, b: 1, a: 1}
+  walkSpeed: 0
+  buildable: 
+  colour: {r: 0, g: 0.033422947, b: 1, a: 0.5}
   minClusterRadius: 0
   maxClusterRadius: 0
   minTilesInCluser: 0

@@ -13,6 +13,6 @@ public class TileController : MonoBehaviour
 
     public void UpdateColour(Color newColour)
     {
-        spriteRenderer.color = newColour;
+       spriteRenderer.color = newColour;
     }
 }

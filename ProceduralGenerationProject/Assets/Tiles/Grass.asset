@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Grass
   m_EditorClassIdentifier: 
   ID: 2
+  currentID: 0
   name: Grass
   walkable: 1
-  colour: {r: 0.046905186, g: 0.7169812, b: 0, a: 1}
-  minClusterRadius: 0
-  maxClusterRadius: 0
-  minTilesInCluser: 0
-  maxTilesInCluster: 0
+  walkSpeed: 0
+  buildable: 01000000
+  colour: {r: 0.6084906, g: 1, b: 0.6084906, a: 0.5}

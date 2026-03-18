@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   ID: 0
+  currentID: 0
   name: Water
   walkable: 0
-  colour: {r: 0, g: 0.8170724, b: 1, a: 1}
+  walkSpeed: 0
+  buildable: 
+  colour: {r: 0, g: 0.97979045, b: 1, a: 0.5}
   minClusterRadius: 0
   maxClusterRadius: 0
   minTilesInCluser: 0

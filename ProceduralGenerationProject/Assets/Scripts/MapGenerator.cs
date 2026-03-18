@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Tilemaps;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] RawImage miniMap;
 
     //Dictonary for groups of tiles
-    Dictionary <int, GameObject> tileGroups;
+    //Dictionary <int, GameObject> tileGroups;
 
     [SerializeField] Tile[] tiles;
 
@@ -25,23 +26,14 @@ public class MapGenerator : MonoBehaviour
 
     //Adjustables in the inspector
     [SerializeField] int seed; 
-    [SerializeField] private MapSize mapSize;
-    [SerializeField] private int smallWidth, smallHeight;
-    [SerializeField] private int mediumWidth, mediumHeight;
-    [SerializeField] private int largeWidth, largeHeight;
-    [SerializeField] private int smallMapResMinAmount, smallMapResMaxAmount;
-    [SerializeField] private int medMapResMinAmount, medMapResMaxAmount;
-    [SerializeField] private int largeMapResMinAmount, largeMapResMaxAmount;
+    [SerializeField] private MapData mapData;
     [SerializeField] private int candidatesToCheckForResourcePlacement;
     [SerializeField] float magnification;
 
-    //Map Sizes
-    enum MapSize
-    {
-        Small,
-        Medium,
-        Large
-    }
+    //Adjustable Cluster Sizes
+
+    [SerializeField] int minClusterRadiusIronium, maxClusterRadiusIronium;
+    [SerializeField] int minClusterRadiusSiberiums, maxClusterRadiusSiberiums;
 
     //Tile Names
     enum TileType
@@ -54,16 +46,10 @@ public class MapGenerator : MonoBehaviour
         Ironium
     }
 
-    //Grid Size
-    public int width { get; private set; }
-    public int height { get; private set; }
-
     public Tile[,] noiseGrid { get; private set; }
 
     int xOffset = 0; //Reduce = move terrain left / Increase = move terrain right
     int yOffset = 0; //Reduce = move terrain down / Increase = move terrain up
-
-    int resMinAmount, resMaxAmount;
 
     //Helper directions array
     static readonly Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
@@ -81,7 +67,7 @@ public class MapGenerator : MonoBehaviour
             random = new System.Random();
         }
 
-        noiseGrid = MapSizeCreator();
+        noiseGrid = new Tile[mapData.width, mapData.height];
         xOffset = random.Next(-10000, 10000);
         yOffset = random.Next(-10000, 10000);
         Debug.Log("xOffset: " + xOffset + " , " + "yOffset " + yOffset);
@@ -111,50 +97,14 @@ public class MapGenerator : MonoBehaviour
         SpawnPlayer();
     }
 
-    Tile[,] MapSizeCreator()
+    public MapData GetMapData()
     {
-        switch (mapSize)
-        {
-            case MapSize.Small:
-
-                width = smallWidth;
-                height = smallHeight;
-                resMinAmount = smallMapResMinAmount;
-                resMaxAmount = smallMapResMaxAmount;
-                break;
-
-            case MapSize.Medium:
-
-                width = mediumWidth;
-                height = mediumHeight;
-                resMinAmount = medMapResMinAmount;
-                resMaxAmount= medMapResMaxAmount;
-                break;
-
-            case MapSize.Large:
-
-                width = largeWidth;
-                height = largeHeight;
-                resMinAmount= largeMapResMinAmount;
-                resMaxAmount= largeMapResMaxAmount;
-                break;
-
-            default:
-
-                width = 100;
-                height = 100;
-                resMinAmount = smallMapResMinAmount;
-                resMaxAmount = smallMapResMaxAmount;
-                break;
-        
-        }
-
-        return new Tile[width, height];
+        return mapData;
     }
 
     public bool CheckIfInBoundaries(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= width || y >= height) return false;
+        if (x < 0 || y < 0 || x >= mapData.width || y >= mapData.height) return false;
 
         return true;
     }
@@ -163,7 +113,10 @@ public class MapGenerator : MonoBehaviour
     {
         GameObject tileObj = Instantiate(defaultTile);
         tileObj.GetComponent<SpriteRenderer>().color = tile.colour;
-        tileObj.AddComponent<TileController>().tile = tile;
+        //tileObj.AddComponent<TileController>().tile = tile;
+
+        //tileObj.GetComponent<TileController>().UpdateColour(tile.colour);
+
 
         //Inspector naming format for ease of access to the tile - coordinates mentioned in the name
         tileObj.name = string.Format("tile_x{0}_y{1}", x, y);
@@ -186,9 +139,9 @@ public class MapGenerator : MonoBehaviour
     void CreateNoiseGrid()
     {
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < mapData.width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < mapData.height; y++)
             {
                 noiseGrid[x, y] = CreateMainTerrain(x, y);
             }
@@ -219,14 +172,14 @@ public class MapGenerator : MonoBehaviour
 
     void ApplyResources()
     {
-        int resAmount = random.Next(resMinAmount, resMaxAmount);
+        int resAmount = random.Next(mapData.minResAmount, mapData.maxResAmount);
 
         //Siberium deposits
         List<Vector2Int> siberiumNodes = GenerateBestCandidatePoints(resAmount, 50, tiles[(int)TileType.Grass]);
 
         foreach (Vector2Int pos in siberiumNodes)
         {
-            int radius = random.Next(tiles[(int)TileType.Siberiums].minClusterRadius, tiles[(int)TileType.Siberiums].maxClusterRadius);
+            int radius = random.Next(minClusterRadiusSiberiums, maxClusterRadiusSiberiums);
             GrowResourceCluster(pos, tiles[(int)TileType.Siberiums], tiles[(int)TileType.Grass], radius);
         }
 
@@ -235,7 +188,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Vector2Int pos in ironiumNodes)
         {
-            int radius = random.Next(tiles[(int)TileType.Ironium].minClusterRadius, tiles[(int)TileType.Ironium].maxClusterRadius);
+            int radius = random.Next(minClusterRadiusIronium, maxClusterRadiusIronium);
             GrowResourceCluster(pos, tiles[(int)TileType.Ironium], tiles[(int)TileType.Grass], radius);
         }
     }
@@ -253,7 +206,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (noiseGrid[nx, ny].ID == biomeToCheck.ID)
                 {
-                    //Calculate the Euclidean distance - diagonal distance
+                    //Calculate the diagonal distance
                     float distance = Mathf.Sqrt(x * x + y * y);
 
                     //Only populate the space if the value is within the circle 
@@ -272,7 +225,7 @@ public class MapGenerator : MonoBehaviour
         List<Vector2Int> points = new List<Vector2Int>();
 
         //Starting point
-        points.Add(new Vector2Int(Random.Range(0, width), Random.Range(0, height)));
+        points.Add(new Vector2Int(Random.Range(0, mapData.width), Random.Range(0, mapData.height)));
 
         for (int i = 1; i < count; i++)
         {
@@ -282,8 +235,8 @@ public class MapGenerator : MonoBehaviour
 
             for (int c = 0; c < candidates; c++)
             {
-                int x = Random.Range(0, width);
-                int y = Random.Range(0, height);
+                int x = Random.Range(0, mapData.width);
+                int y = Random.Range(0, mapData.height);
 
                 if (noiseGrid[x, y].ID != biomeToCheck.ID) continue;
 
@@ -315,22 +268,22 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < 100; i++)
         {
             //Random Position
-            int x = Random.Range(0, width);
-            int y = Random.Range(0, height);
+            int x = Random.Range(0, mapData.width);
+            int y = Random.Range(0, mapData.height);
 
             //Check if the tile is land
             if (noiseGrid[x, y].ID == tiles[(int)TileType.Grass].ID) return new Vector2Int(x, y);
         }
 
         //Center of map - backup positioning
-        return new Vector2Int(width/2, height/2);
+        return new Vector2Int(mapData.width /2, mapData.height /2);
     }
 
     void BuildMapFromGrid()
     {
-        for(int x = 0; x < width; x++)
+        for(int x = 0; x < mapData.width; x++)
         {
-            for(int y = 0; y < height; y++)
+            for(int y = 0; y < mapData.height; y++)
             {
                 CreateTile(noiseGrid[x, y], x, y);
             }
@@ -357,13 +310,11 @@ public class MapGenerator : MonoBehaviour
             Vector2Int currentTile = queue.Dequeue();
             cluster.Add(currentTile);
 
-            //Check each neighbour
             foreach(Vector2Int direction in directions)
             {
                 int newX = currentTile.x + direction.x;
                 int newY = currentTile.y + direction.y;
 
-                //If its outside map bounds, skip it
                 if (!CheckIfInBoundaries(newX, newY)) continue;
 
                 //If this tile has not been checked and is of the same type
@@ -381,11 +332,11 @@ public class MapGenerator : MonoBehaviour
 
     void ConfigureClusters(Tile clusterTile, int minSize, int maxSize, Tile replacementTile)
     {
-        bool[,] visited = new bool[width, height];
+        bool[,] visited = new bool[mapData.width, mapData.height];
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < mapData.width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < mapData.height; y++)
             {
                 //Check to see if a tile has not been visited and is of the required type
                 if (!visited[x,y] && noiseGrid[x, y].ID == clusterTile.ID)
@@ -393,7 +344,6 @@ public class MapGenerator : MonoBehaviour
                     //Use floodfill algorithm to get the full cluster
                     List<Vector2Int> cluster = FloodFill(x, y, clusterTile.ID, visited);
 
-                    //Check if its within the required sizes
                     if (cluster.Count < minSize || cluster.Count > maxSize)
                     {
                         //If its not, replace the cluster with another specified type of tiles
@@ -413,9 +363,9 @@ public class MapGenerator : MonoBehaviour
     {
         bool doesExist = false;
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < mapData.width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < mapData.height; y++)
             {
                 if (noiseGrid[x, y].ID == tile.ID)
                 {
@@ -435,11 +385,9 @@ public class MapGenerator : MonoBehaviour
 
             while (!hasCreated)
             { 
-                //Random Position
-                int x = Random.Range(0, width);
-                int y = Random.Range(0, height);
+                int x = Random.Range(0, mapData.width);
+                int y = Random.Range(0, mapData.height);
 
-                //Check if the tile is land
                 if (!hasCreated && noiseGrid[x, y].ID == tileToReplace.ID)
                 {
                     noiseGrid[x, y] = replacementTile;
@@ -449,7 +397,7 @@ public class MapGenerator : MonoBehaviour
                         int newX = x + direction.x;
                         int newY = y + direction.y;
 
-                        if (newX < 0 || newY < 0 || newX >= width || newY >= height) continue;
+                        if (newX < 0 || newY < 0 || newX >= mapData.width || newY >= mapData.height) continue;
 
                         if (noiseGrid[newX, newY].ID == tileToReplace.ID)
                         {
@@ -461,7 +409,7 @@ public class MapGenerator : MonoBehaviour
                             int newX2 = newX + secondDirection.x;
                             int newY2 = newY + secondDirection.y;
 
-                            if (newX2 < 0 || newY2 < 0 || newX2 >= width || newY2 >= height) continue;
+                            if (newX2 < 0 || newY2 < 0 || newX2 >= mapData.width || newY2 >= mapData.height) continue;
 
                             if (noiseGrid[newX2, newY2].ID == tileToReplace.ID)
                             {
@@ -479,11 +427,11 @@ public class MapGenerator : MonoBehaviour
 
     void FindAndUpdateEdges()
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < mapData.width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < mapData.height; y++)
             {
-                if(x < 1 || y < 1 || x >= width - 1 || y >= height - 1)
+                if(x < 1 || y < 1 || x >= mapData.width - 1 || y >= mapData.height - 1)
                 {
                     noiseGrid[x, y] = tiles[(int)TileType.Shroud];
                 }

@@ -11,15 +11,13 @@ public class BuildingPlacementManager : MonoBehaviour
 
     [SerializeField] Transform previewImagesGroup;
     [SerializeField] Transform buildingsGroup;
+    [SerializeField] Sprite targetImage;
     [SerializeField] MapGenerator map;
 
     private BuildingData selectedBuilding;
     private GameObject previewImage;
-
-    private Color placeableColour;
-    private Color notPlacebleColour;
-
-    private List<Color> originalColours;
+    private GameObject target;
+    SpriteRenderer targetRenderer;
 
     void Awake()
     {
@@ -30,17 +28,18 @@ public class BuildingPlacementManager : MonoBehaviour
         }
 
         Instance = this;
-
-        originalColours = new List<Color>();
-
-        placeableColour = new Color(144, 238, 144, 0.5f);
-        notPlacebleColour = new Color(255, 120, 120, 0.5f);
     }
 
     public void PlaceBuilding(BuildingData building)
     {
         selectedBuilding = building;
         Debug.Log("Placing: " + building.name);
+
+        target = new GameObject("targetImage");
+        target.transform.SetParent(previewImagesGroup);
+        targetRenderer = target.AddComponent<SpriteRenderer>();
+        targetRenderer.sprite = targetImage;
+        targetRenderer.sortingOrder = 2;
 
         previewImage = new GameObject("previewImage");
         previewImage.transform.SetParent(previewImagesGroup);
@@ -54,71 +53,39 @@ public class BuildingPlacementManager : MonoBehaviour
     {
         if (selectedBuilding == null) return;
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mousePos.z = 0;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         previewImage.transform.position = mousePos;
+        target.transform.position = mousePos;
 
-        for(int x = 0; x < map.width; x++)
+
+        if(map.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildable.Length > 0)
         {
-            for(int y = 0; y < map.height; y++)
+            //can build here
+            target.GetComponent<SpriteRenderer>().color = Color.green;
+
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                originalColours.Add(map.noiseGrid[x, y].colour);
-
-                map.noiseGrid[x, y].colour = notPlacebleColour;
-
-                if (selectedBuilding.canBuildOnResources && (map.noiseGrid[x,y].name == "Ironium" || map.noiseGrid[x,y].name == "Siberiums"))
-                {
-                    map.noiseGrid[x, y].colour = placeableColour;
-                }
-                
-                if(selectedBuilding.canBuildOnLand && map.noiseGrid[x,y].name == "Grass")
-                {
-                    map.noiseGrid[x, y].colour = placeableColour;
-                }
-
-                if (selectedBuilding.canBuildOnWater && map.noiseGrid[x, y].name == "Water")
-                {
-                    map.noiseGrid[x, y].colour = placeableColour;
-                }  
+                InstantiateBuilding(mousePos);
             }
         }
-
-
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        else
         {
-            InstantiateBuilding();
+            targetRenderer.color = Color.red;
         }
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             selectedBuilding = null;
             Destroy(previewImage);
-
-            int index = 0;
-
-            for (int x = 0; x < map.width; x++)
-            {
-                for (int y = 0; y < map.height; y++)
-                {
-                    map.noiseGrid[x, y].colour = originalColours[index];
-                    index++;
-                }
-            }
+            Destroy(target);
         }
     }
 
-    void InstantiateBuilding()
+    void InstantiateBuilding(Vector2 worldPos)
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        worldPos.z = 0;
+        worldPos.x = Mathf.Round(worldPos.x / 1);
+        worldPos.y = Mathf.Round(worldPos.y / 1);
 
-        float gridSize = 1f;
-
-        worldPos.x = Mathf.Round(worldPos.x / gridSize) * gridSize;
-        worldPos.y = Mathf.Round(worldPos.y / gridSize) * gridSize;
-
-
-        if (map.noiseGrid[(int)worldPos.x, (int)worldPos.y].colour == notPlacebleColour) return;
 
         GameObject building = Instantiate(selectedBuilding.prefab, worldPos, Quaternion.identity);
         building.transform.SetParent(buildingsGroup);

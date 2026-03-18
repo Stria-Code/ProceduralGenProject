@@ -730,6 +730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewImagesGroup: {fileID: 387159804}
   buildingsGroup: {fileID: 787833288}
+  targetImage: {fileID: 21300000, guid: 40c61d17773c1894385d0ad4bf735ebf, type: 3}
   map: {fileID: 847160525}
 --- !u!4 &333717165
 Transform:
@@ -884,7 +885,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1414,6 +1415,10 @@ MonoBehaviour:
   largeMapResMaxAmount: 50
   candidatesToCheckForResourcePlacement: 50
   magnification: 25
+  minClusterRadiusIronium: 1
+  maxClusterRadiusIronium: 7
+  minClusterRadiusSiberiums: 1
+  maxClusterRadiusSiberiums: 7
 --- !u!1 &1345627692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1547,7 +1552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c468c62607372c4fb9192f1b7a55f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  building: {fileID: 11400000, guid: 56819827bad48044c91ed08288613df8, type: 2}
+  building: {fileID: 11400000, guid: 6e95ba6b98bdf214eb1cb712acbd4d43, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

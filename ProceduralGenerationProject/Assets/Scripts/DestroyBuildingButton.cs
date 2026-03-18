@@ -23,8 +23,7 @@ public class DestroyBuildingButton : MonoBehaviour
     {
         if (!isButtonClicked) return;
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mousePos.z = 0;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         previewImage.transform.position = mousePos;
 
         Collider2D hit = Physics2D.OverlapPoint(mousePos);

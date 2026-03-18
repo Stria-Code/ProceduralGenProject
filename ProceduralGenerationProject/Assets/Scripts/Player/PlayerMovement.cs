@@ -27,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
         if (Keyboard.current.dKey.isPressed) movement.x = 1;
         if (Keyboard.current.sKey.isPressed) movement.y = -1;
         if (Keyboard.current.wKey.isPressed) movement.y = 1;
+
+        if (Mouse.current.scroll.up.magnitude > 0.1f) Camera.main.orthographicSize += 1;
+        if (Mouse.current.scroll.down.magnitude > 0.1f) Camera.main.orthographicSize -= 1;
     }
 
     private void FixedUpdate()

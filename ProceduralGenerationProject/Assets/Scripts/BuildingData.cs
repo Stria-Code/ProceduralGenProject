@@ -8,10 +8,5 @@ public class BuildingData : ScriptableObject
     [SerializeField] public GameObject prefab;
     [SerializeField] public bool unlocked;
     [SerializeField] public int cost; //not used in this version
-
-
-    //Can be expended per added tiles
-    [SerializeField] public bool canBuildOnWater;
-    [SerializeField] public bool canBuildOnLand;
-    [SerializeField] public bool canBuildOnResources;
+    [SerializeField] public bool walkable;
 }
