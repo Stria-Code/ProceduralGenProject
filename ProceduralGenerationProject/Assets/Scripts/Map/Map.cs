@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 static public class Map
 { 
-
     static public Texture2D CreateTexture(Tile[,] gridToDraw)
     {
         Texture2D texture = new Texture2D(gridToDraw.GetLength(0), gridToDraw.GetLength(1));

@@ -12,7 +12,7 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] Transform previewImagesGroup;
     [SerializeField] Transform buildingsGroup;
     [SerializeField] Sprite targetImage;
-    [SerializeField] MapGenerator map;
+    [SerializeField] GridGenerator grid;
 
     private BuildingData selectedBuilding;
     private GameObject previewImage;
@@ -58,7 +58,7 @@ public class BuildingPlacementManager : MonoBehaviour
         target.transform.position = mousePos;
 
 
-        if(map.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildable.Length > 0)
+        if(grid.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
         {
             //can build here
             target.GetComponent<SpriteRenderer>().color = Color.green;

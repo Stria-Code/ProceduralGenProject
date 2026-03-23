@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Transform player;
-    [SerializeField] MapGenerator mapData;
+    [SerializeField] MapConfig currentMap;
 
     void LateUpdate()
     {
@@ -19,10 +19,10 @@ public class CameraController : MonoBehaviour
 
         //Restrains the camera view from going over map edges
         float minX = camWidth - 0.5f;
-        float maxX = (mapData.GetMapData().width - 0.5f) - camWidth;
+        float maxX = (currentMap.mapData.width - 0.5f) - camWidth;
 
         float minY = camHeight - 0.5f;
-        float maxY = (mapData.GetMapData().height - 0.5f) - camHeight;
+        float maxY = (currentMap.mapData.height - 0.5f) - camHeight;
 
         //This clamps the camera to follow the player but also keep it constrained to the map bounds
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
