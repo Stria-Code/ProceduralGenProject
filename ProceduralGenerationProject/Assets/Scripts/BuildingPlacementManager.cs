@@ -12,7 +12,7 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] Transform previewImagesGroup;
     [SerializeField] Transform buildingsGroup;
     [SerializeField] Sprite targetImage;
-    [SerializeField] GridGenerator grid;
+    //[SerializeField] GridGenerator grid;
 
     private BuildingData selectedBuilding;
     private GameObject previewImage;
@@ -58,7 +58,7 @@ public class BuildingPlacementManager : MonoBehaviour
         target.transform.position = mousePos;
 
 
-        if(grid.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
+        /*if(grid.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
         {
             //can build here
             target.GetComponent<SpriteRenderer>().color = Color.green;
@@ -78,7 +78,7 @@ public class BuildingPlacementManager : MonoBehaviour
             selectedBuilding = null;
             Destroy(previewImage);
             Destroy(target);
-        }
+        }*/
     }
 
     void InstantiateBuilding(Vector2 worldPos)

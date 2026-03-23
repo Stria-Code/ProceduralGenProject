@@ -565,6 +565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildMenu: {fileID: 16034763}
   mapMenu: {fileID: 774618357}
+  map: {fileID: 847160522}
 --- !u!114 &144278959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -757,7 +758,6 @@ MonoBehaviour:
   previewImagesGroup: {fileID: 387159804}
   buildingsGroup: {fileID: 787833288}
   targetImage: {fileID: 21300000, guid: 40c61d17773c1894385d0ad4bf735ebf, type: 3}
-  grid: {fileID: 0}
 --- !u!4 &333717165
 Transform:
   m_ObjectHideFlags: 0
@@ -1449,8 +1449,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miniMap: {fileID: 16719022}
-  seed: 0
-  magnification: 25
 --- !u!114 &847160528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1504,6 +1502,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d7e59c11289224db132ac6cca05496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
+  magnification: 25
 --- !u!1 &1345627692
 GameObject:
   m_ObjectHideFlags: 0

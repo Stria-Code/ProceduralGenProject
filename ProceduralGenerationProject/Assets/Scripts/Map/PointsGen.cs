@@ -15,7 +15,7 @@ public class PointsGen : MonoBehaviour
 
 
     //Mitchells best candidate algorithm
-    public List<Vector2Int> GenerateBestCandidatePoints(int pointsCount, int candidates, Tile biomeToCheck)
+    public List<Vector2Int> GenerateBestCandidatePoints(int pointsCount, int candidates, TileData biomeToCheck)
     {
         List<Vector2Int> points = new List<Vector2Int>();
 
@@ -33,7 +33,7 @@ public class PointsGen : MonoBehaviour
                 int x = Random.Range(0, currentMap.mapData.width);
                 int y = Random.Range(0, currentMap.mapData.height);
 
-                if (gridGenerator.noiseGrid[x, y].ID != biomeToCheck.ID) continue;
+                if (gridGenerator.noiseGrid[x, y].tileData.ID != biomeToCheck.ID) continue;
 
                 //maxValue so the first candidate is always valid
                 float minDist = float.MaxValue;
