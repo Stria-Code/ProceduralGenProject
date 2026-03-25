@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 static public class Map
 { 
-    static public Texture2D CreateTexture(TileData[,] gridToDraw)
+    static public Texture2D CreateTexture(Tile[,] gridToDraw)
     {
         Texture2D texture = new Texture2D(gridToDraw.GetLength(0), gridToDraw.GetLength(1));
 
@@ -12,7 +12,7 @@ static public class Map
         {
             for (int y = 0; y < gridToDraw.GetLength(1); y++)
             {
-                texture.SetPixel(x, y, gridToDraw[x, y].colour);
+                texture.SetPixel(x, y, gridToDraw[x, y].tileData.colour);
             }
         }
 

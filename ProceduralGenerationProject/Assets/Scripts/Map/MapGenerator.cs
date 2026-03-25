@@ -67,17 +67,18 @@ public class MapGenerator : MonoBehaviour
     void CreateTile(TileData tile, int x, int y)
     {
         //obj related 
-        var g =  Instantiate(defaultTile);
+        GameObject g =  Instantiate(defaultTile);
         g.name = string.Format("tile_x{0}_y{1}", x, y);
-       g.transform.localPosition = new Vector3(x, y, 0);
+        g.transform.localPosition = new Vector3(x, y, 0);
 
 
        // link on a tile controller for tracking
-      Tile t =g.AddComponent<Tile>();
+        Tile t = g.AddComponent<Tile>();
         t.spriteRenderer = g.GetComponent<SpriteRenderer>();
         t.spriteRenderer.color = tile.colour;
+        t.pos = new Vector2(x, y);   
       //  t.tile.colour = tile.colour;  // seb, decide if you want to only change appearance or data in the tile obj
-      //  t.tile.colour = tile.colour;  // seb, decide if you want to only change appearance or data in the tile obj
+
         t.tileData = tile;
 
       

@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04dc4e089db14584592cafceeb1bce22, type: 3}
-  m_Name: Siberiums
+  m_Script: {fileID: 11500000, guid: bfcaf53818e2e3c4c96caa57afcd7fd7, type: 3}
+  m_Name: Siberium
   m_EditorClassIdentifier: 
   ID: 4
-  currentID: 0
-  name: Siberiums
   walkable: 1
   walkSpeed: 0
-  buildable: 01000000
-  colour: {r: 1, g: 0.44076967, b: 0, a: 0.5}
+  buildOnTop: 02000000
+  health: 0
+  colour: {r: 1, g: 0.6079833, b: 0, a: 1}
+  image: {fileID: 0}

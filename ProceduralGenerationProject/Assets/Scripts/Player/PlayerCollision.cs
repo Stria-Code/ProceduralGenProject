@@ -34,12 +34,12 @@ public class PlayerCollision : MonoBehaviour
         {
             for (int y = minY; y <= maxY; y++)
             {
-                //if (!grid.CheckIfInBoundaries(x, y))
+                if (!grid.CheckIfInBoundaries(x, y))
                 {
                     return false;
                 }
 
-                //if (!grid.noiseGrid[x, y].walkable)
+                if (!grid.noiseGrid[x, y].tileData.walkable)
                 {
                     return false;
                 }

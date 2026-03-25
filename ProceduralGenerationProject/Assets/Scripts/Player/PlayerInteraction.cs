@@ -12,8 +12,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        gridGenerator = map.GetComponent<GridGenerator>();  
         currentMap = map.GetComponent<MapConfig>();
+        gridGenerator = map.GetComponent<GridGenerator>();  
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,7 +39,6 @@ public class PlayerInteraction : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame )//&& gridGenerator.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
         {
             ChangeTileWithClick(mousePos);
-     
         }
     }
 
