@@ -23,7 +23,7 @@ public class PlayerSpawnGen : MonoBehaviour
             int y = Random.Range(0, currentMap.mapData.height);
 
             //Check if the tile is land
-            if (gridGenerator.noiseGrid[x, y].ID == currentMap.mapData.tiles[(int)TileType.Grass].ID) return new Vector2Int(x, y);
+            if (gridGenerator.noiseGrid[x, y].tileData.ID == currentMap.mapData.tiles[(int)TileType.Grass].ID) return new Vector2Int(x, y);
         }
 
         //Center of map - backup positioning

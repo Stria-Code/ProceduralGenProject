@@ -2,11 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TileTypes;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Tilemaps;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -33,10 +29,19 @@ public class MapGenerator : MonoBehaviour
         resourcesGen = GetComponent<ResourcesGen>();
         playerSpawn = GetComponent<PlayerSpawnGen>();
     }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         gridGenerator.CreateNoiseGrid();
+        StartCoroutine(nameof(LateStart));
+ 
+
+
+    }
+      IEnumerator LateStart()
+    {
+        yield return new WaitForSeconds(1f);
         resourcesGen.ApplyResources();
 
         ConfigureClusters(currentMap.mapData.tiles[(int)TileType.Siberiums], 15, 300, currentMap.mapData.tiles[(int)TileType.Grass]);
@@ -56,25 +61,29 @@ public class MapGenerator : MonoBehaviour
         BuildMapFromGrid();
 
         SpawnPlayer();
+       
+         yield return null;
     }
-
-    void CreateTile(Tile tile, int x, int y)
+    void CreateTile(TileData tile, int x, int y)
     {
-        GameObject tileObj = Instantiate(defaultTile);
-        tileObj.GetComponent<SpriteRenderer>().color = tile.colour;
-        //tileObj.GetComponent<SpriteRenderer>().sprite = tile.image;
-        //tileObj.AddComponent<TileController>().tile = tile;
-
-        //tileObj.GetComponent<TileController>().UpdateColour(tile.colour);
+        //obj related 
+        var g =  Instantiate(defaultTile);
+        g.name = string.Format("tile_x{0}_y{1}", x, y);
+       g.transform.localPosition = new Vector3(x, y, 0);
 
 
-        //Inspector naming format for ease of access to the tile - coordinates mentioned in the name
-        tileObj.name = string.Format("tile_x{0}_y{1}", x, y);
+       // link on a tile controller for tracking
+      Tile t =g.AddComponent<Tile>();
+        t.spriteRenderer = g.GetComponent<SpriteRenderer>();
+        t.spriteRenderer.color = tile.colour;
+      //  t.tile.colour = tile.colour;  // seb, decide if you want to only change appearance or data in the tile obj
+      //  t.tile.colour = tile.colour;  // seb, decide if you want to only change appearance or data in the tile obj
+        t.tileData = tile;
 
-        //Gives its position
-        tileObj.transform.localPosition = new Vector3(x, y, 0);
+      
     }
-
+ 
+   
     void SpawnPlayer()
     {
         Vector2Int spawn = playerSpawn.FindPlayerSpawnArea();
@@ -91,7 +100,7 @@ public class MapGenerator : MonoBehaviour
             {
                 if (x < 1 || y < 1 || x >= currentMap.mapData.width - 1 || y >= currentMap.mapData.height - 1)
                 {
-                    gridGenerator.noiseGrid[x, y] = currentMap.mapData.tiles[(int)TileType.Shroud];
+                    gridGenerator.noiseGrid[x, y].tileData = currentMap.mapData.tiles[(int)TileType.Shroud];
                 }
             }
         }
@@ -126,7 +135,7 @@ public class MapGenerator : MonoBehaviour
                 if (!gridGenerator.CheckIfInBoundaries(newX, newY)) continue;
 
                 //If this tile has not been checked and is of the same type
-                if (!visited[newX, newY] && gridGenerator.noiseGrid[newX, newY].ID == tileID)
+                if (!visited[newX, newY] && gridGenerator.noiseGrid[newX, newY].tileData.ID == tileID)
                 {
                     //Mark it as visited and add it to the queue to look at its neighbours later
                     visited[newX, newY] = true;
@@ -138,7 +147,7 @@ public class MapGenerator : MonoBehaviour
         return cluster;
     }
 
-    void ConfigureClusters(Tile clusterTile, int minSize, int maxSize, Tile replacementTile)
+    void ConfigureClusters(TileData clusterTile, int minSize, int maxSize, TileData replacementTile)
     {
         bool[,] visited = new bool[currentMap.mapData.width, currentMap.mapData.height];
 
@@ -147,7 +156,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < currentMap.mapData.height; y++)
             {
                 //Check to see if a tile has not been visited and is of the required type
-                if (!visited[x, y] && gridGenerator.noiseGrid[x, y].ID == clusterTile.ID)
+                if (!visited[x, y] && gridGenerator.noiseGrid[x, y].tileData.ID == clusterTile.ID)
                 {
                     //Use floodfill algorithm to get the full cluster
                     List<Vector2Int> cluster = FloodFill(x, y, clusterTile.ID, visited);
@@ -157,7 +166,7 @@ public class MapGenerator : MonoBehaviour
                         //If its not, replace the cluster with another specified type of tiles
                         foreach (Vector2Int tile in cluster)
                         {
-                            gridGenerator.noiseGrid[tile.x, tile.y] = replacementTile;
+                            gridGenerator.noiseGrid[tile.x, tile.y].tileData = replacementTile;
                         }
                     }
                 }
@@ -172,14 +181,14 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < currentMap.mapData.height; y++)
             {
-                CreateTile(gridGenerator.noiseGrid[x, y], x, y);
+                CreateTile(gridGenerator.noiseGrid[x, y].tileData, x, y);
             }
         }
     }
 
 
     //Backup cluster generation
-    void CreateClusters(Tile replacementTile, Tile tileToReplace)
+    void CreateClusters(TileData replacementTile, TileData tileToReplace)
     {
         if (!FindTile(replacementTile))
         {
@@ -190,9 +199,9 @@ public class MapGenerator : MonoBehaviour
                 int x = Random.Range(0, currentMap.mapData.width);
                 int y = Random.Range(0, currentMap.mapData.height);
 
-                if (!hasCreated && gridGenerator.noiseGrid[x, y].ID == tileToReplace.ID)
+                if (!hasCreated && gridGenerator.noiseGrid[x, y].tileData.ID == tileToReplace.ID)
                 {
-                    gridGenerator.noiseGrid[x, y] = replacementTile;
+                    gridGenerator.noiseGrid[x, y].tileData = replacementTile;
 
                     foreach (Vector2Int direction in directions)
                     {
@@ -201,9 +210,9 @@ public class MapGenerator : MonoBehaviour
 
                         if (newX < 0 || newY < 0 || newX >= currentMap.mapData.width || newY >= currentMap.mapData.height) continue;
 
-                        if (gridGenerator.noiseGrid[newX, newY].ID == tileToReplace.ID)
+                        if (gridGenerator.noiseGrid[newX, newY].tileData.ID == tileToReplace.ID)
                         {
-                            gridGenerator.noiseGrid[newX, newY] = replacementTile;
+                            gridGenerator.noiseGrid[newX, newY].tileData = replacementTile;
                         }
 
                         foreach (Vector2Int secondDirection in directions)
@@ -213,9 +222,9 @@ public class MapGenerator : MonoBehaviour
 
                             if (newX2 < 0 || newY2 < 0 || newX2 >= currentMap.mapData.width || newY2 >= currentMap.mapData.height) continue;
 
-                            if (gridGenerator.noiseGrid[newX2, newY2].ID == tileToReplace.ID)
+                            if (gridGenerator.noiseGrid[newX2, newY2].tileData.ID == tileToReplace.ID)
                             {
-                                gridGenerator.noiseGrid[newX2, newY2] = replacementTile;
+                                gridGenerator.noiseGrid[newX2, newY2].tileData = replacementTile;
                             }
                         }
                     }
@@ -226,7 +235,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-    bool FindTile(Tile tile)
+    bool FindTile(TileData tile)
     {
         bool doesExist = false;
 
@@ -234,7 +243,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < currentMap.mapData.height; y++)
             {
-                if (gridGenerator.noiseGrid[x, y].ID == tile.ID)
+                if (gridGenerator.noiseGrid[x, y].tileData.ID == tile.ID)
                 {
                     doesExist = true;
                 }

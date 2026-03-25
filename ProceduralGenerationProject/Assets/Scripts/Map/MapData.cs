@@ -5,5 +5,6 @@ public class MapData : ScriptableObject
 {
     [SerializeField] public int width, height;
     [SerializeField] public int minResAmount, maxResAmount;
-    [SerializeField] public Tile[] tiles;
+    [SerializeField] public float[] threshold;
+    [SerializeField] public TileData[] tiles;    
 }

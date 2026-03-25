@@ -1,8 +1,4 @@
-using Microsoft.Unity.VisualStudio.Editor;
-using System.Collections.Generic;
-using System.Resources;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.U2D.Aseprite;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,15 +8,8 @@ public class GridGenerator : MonoBehaviour
     private TerrainPerlinGen perlinGen;
 
     [SerializeField] RawImage miniMap;
-    [SerializeField] int seed;
-    [SerializeField] int magnification;
-
-    int xOffset = 0; //Reduce = move terrain left / Increase = move terrain right
-    int yOffset = 0; //Reduce = move terrain down / Increase = move terrain up
 
     public Tile[,] noiseGrid { get; private set; }
-
-    private System.Random random = new System.Random();
 
     private void Awake()
     {
@@ -35,31 +24,41 @@ public class GridGenerator : MonoBehaviour
         return true;
     }
 
-    public void CreateNoiseGrid()
+    public void SetTileAtPos(int x, int y, TileData replacementTile)
     {
-        if (seed != 0)
-        {
-            random = new System.Random(seed);
-        }
-        else
-        {
-            random = new System.Random();
-        }
 
+       Tile t =  noiseGrid[x, y].GetComponent<Tile>();
+
+        if (t == null) return;
+        
+        t.spriteRenderer.color = replacementTile.colour;
+       // SpriteRenderer sr = noiseGrid[x, y].
+      //  Debug.Log(sr.gameObject.name);
+      //  sr.color = Color.black;
+      //  noiseGrid[x, y] = replacementTile;
+        //noiseGrid[x, y].spriteRenderer = sr;
+        // Add other transferable tile bits you need
+     //   sr.color = noiseGrid[x, y].colour;
+    }
+
+    public void CreateNoiseGrid()// is 2nd pass 
+    {
         noiseGrid = new Tile[currentMap.mapData.width, currentMap.mapData.height];
-        xOffset = random.Next(-10000, 10000);
-        yOffset = random.Next(-10000, 10000);
-        Debug.Log("xOffset: " + xOffset + " , " + "yOffset " + yOffset);
 
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
         for (int x = 0; x < currentMap.mapData.width; x++)
         {
             for (int y = 0; y < currentMap.mapData.height; y++)
             {
-                noiseGrid[x, y] = perlinGen.CreateMainTerrain(x, y, xOffset, yOffset, magnification);
+                noiseGrid[x, y] = new Tile();
+                noiseGrid[x, y].tileData = new TileData();
+               // SpriteRenderer sr = noiseGrid[x, y].spriteRenderer;
+                noiseGrid[x, y].tileData = perlinGen.GetTerrainTile(x, y); //
+                
             }
         }
 
-        miniMap.texture = Map.CreateTexture(noiseGrid);
+        //miniMap.texture = Map.CreateTexture(noiseGrid);
+
     }
 }
