@@ -12,9 +12,10 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] Transform previewImagesGroup;
     [SerializeField] Transform buildingsGroup;
     [SerializeField] Sprite targetImage;
-    //[SerializeField] GridGenerator grid;
+    [SerializeField] GameObject mapGenerator;
+    GridGenerator grid;
 
-    private BuildingData selectedBuilding;
+    private TileData selectedBuilding;
     private GameObject previewImage;
     private GameObject target;
     SpriteRenderer targetRenderer;
@@ -28,9 +29,21 @@ public class BuildingPlacementManager : MonoBehaviour
         }
 
         Instance = this;
+
+        grid = mapGenerator.GetComponent<GridGenerator>();
+
     }
 
-    public void PlaceBuilding(BuildingData building)
+    public void CreatePreviewImageOfTile(TileData tile)
+    {
+        previewImage = new GameObject("previewImage");
+        previewImage.transform.SetParent(previewImagesGroup);
+        SpriteRenderer spriteRenderer = previewImage.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = tile.image;
+        spriteRenderer.sortingOrder = 1;
+        spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+    }
+    public void PlaceBuilding(TileData building)
     {
         selectedBuilding = building;
         Debug.Log("Placing: " + building.name);
@@ -41,12 +54,8 @@ public class BuildingPlacementManager : MonoBehaviour
         targetRenderer.sprite = targetImage;
         targetRenderer.sortingOrder = 2;
 
-        previewImage = new GameObject("previewImage");
-        previewImage.transform.SetParent(previewImagesGroup);
-        SpriteRenderer spriteRenderer = previewImage.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = building.image;
-        spriteRenderer.sortingOrder = 1;
-        spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        CreatePreviewImageOfTile(building);
+
     }
 
     void Update()
@@ -58,7 +67,7 @@ public class BuildingPlacementManager : MonoBehaviour
         target.transform.position = mousePos;
 
 
-        /*if(grid.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
+        if(grid.tileGrid[(int)mousePos.x, (int)mousePos.y].tileData.buildOnTop.Length > 0)
         {
             //can build here
             target.GetComponent<SpriteRenderer>().color = Color.green;
@@ -78,7 +87,7 @@ public class BuildingPlacementManager : MonoBehaviour
             selectedBuilding = null;
             Destroy(previewImage);
             Destroy(target);
-        }*/
+        }
     }
 
     void InstantiateBuilding(Vector2 worldPos)

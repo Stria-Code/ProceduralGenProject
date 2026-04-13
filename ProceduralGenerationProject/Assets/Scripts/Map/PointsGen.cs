@@ -33,7 +33,7 @@ public class PointsGen : MonoBehaviour
                 int x = Random.Range(0, currentMap.mapData.width);
                 int y = Random.Range(0, currentMap.mapData.height);
 
-                if (gridGenerator.noiseGrid[x, y].tileData.ID != biomeToCheck.ID) continue;
+                if (gridGenerator.tileGrid[x, y].tileData.ID != biomeToCheck.ID) continue;
 
                 //maxValue so the first candidate is always valid
                 float minDist = float.MaxValue;

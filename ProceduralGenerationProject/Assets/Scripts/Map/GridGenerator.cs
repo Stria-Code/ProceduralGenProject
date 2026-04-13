@@ -9,12 +9,14 @@ public class GridGenerator : MonoBehaviour
 
     [SerializeField] RawImage miniMap;
 
-    public Tile[,] noiseGrid { get; private set; }
+    public Tile[,] tileGrid { get; private set; }
 
     private void Awake()
     {
         currentMap = GetComponent<MapConfig>();
         perlinGen = GetComponent<TerrainPerlinGen>();
+
+        tileGrid = new Tile[currentMap.mapData.width, currentMap.mapData.height];
     }
 
     public bool CheckIfInBoundaries(int x, int y)
@@ -24,35 +26,40 @@ public class GridGenerator : MonoBehaviour
         return true;
     }
 
+    public void SetTile(TileData replacementTile)
+    { 
+
+    }
+
     public void SetTileAtPos(int x, int y, TileData replacementTile)
     {
-        Tile t = new Tile();
-        t = noiseGrid[x, y].GetComponent<Tile>();
+        if (!CheckIfInBoundaries(x, y)) return;
 
-        if (t == null) return;
+        Tile newTile = tileGrid[x, y].GetComponent<Tile>();
+
+        if (newTile == null) return;
         
-        t.spriteRenderer.color = replacementTile.colour;
+        newTile.tileData = replacementTile;
+        newTile.spriteRenderer.color = replacementTile.colour;
 
     }
 
     public void CreateNoiseGrid()// is 2nd pass 
     {
-        noiseGrid = new Tile[currentMap.mapData.width, currentMap.mapData.height];
-
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
         for (int x = 0; x < currentMap.mapData.width; x++)
         {
             for (int y = 0; y < currentMap.mapData.height; y++)
             {
-                noiseGrid[x, y] = new Tile();
-               noiseGrid[x, y].tileData = new TileData();
+                tileGrid[x, y] = new Tile();
+
                // SpriteRenderer sr = noiseGrid[x, y].spriteRenderer;
-                noiseGrid[x, y].tileData = perlinGen.GetTerrainTile(x, y); //
+                tileGrid[x, y].tileData = perlinGen.GetTerrainTile(x, y); //
                 
             }
         }
 
-        miniMap.texture = Map.CreateTexture(noiseGrid);
+        miniMap.texture = Map.CreateTexture(tileGrid);
 
     }
 }

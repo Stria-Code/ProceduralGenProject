@@ -16,13 +16,13 @@ public class BuildingMenuButton : MonoBehaviour
 
         if (!building.unlocked) return;
 
-        GetComponent<Image>().sprite = building.image;
+        GetComponent<Image>().sprite = building.tileData.image;
 
         button.onClick.AddListener(OnButtonClicked);
     }
 
     void OnButtonClicked()
     {
-        BuildingPlacementManager.Instance.PlaceBuilding(building);
+        BuildingPlacementManager.Instance.PlaceBuilding(building.tileData);
     }
 }

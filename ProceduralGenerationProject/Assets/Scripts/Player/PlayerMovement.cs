@@ -1,9 +1,12 @@
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] int playerSpeed;
+    [SerializeField] GameObject map;
+    GridGenerator grid;
+    private int playerSpeed;
     private PlayerCollision collisionController;
     private Vector2 movement;
 
@@ -14,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         collisionController = GetComponent<PlayerCollision>();
+        grid = map.GetComponent<GridGenerator>();
     }
 
     // Update is called once per frame
@@ -29,11 +33,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        playerSpeed = grid.tileGrid[(int)transform.position.x, (int)transform.position.y].tileData.walkSpeed; 
         Vector2 velocity = movement.normalized * playerSpeed;
+
+        Vector3 currentPos = transform.position;
+
 
         Vector3 predictedPos = transform.position + (Vector3)(velocity * Time.fixedDeltaTime);
 
-        if (collisionController.IsWalkable(predictedPos))
+        if (grid.tileGrid[Mathf.FloorToInt(predictedPos.x), Mathf.FloorToInt(predictedPos.y)].tileData.walkSpeed > 0)
         {
             rb.linearVelocity = velocity;
             return;
@@ -42,5 +50,15 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
     }
 
+    /*public bool IsWalkable(Vector3 predictedPos)
+    {
+
+        Vector2Int currentTile = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+
+        Vector2 normalisedDirection = movement.normalized;
+        Vector2Int targetTile = currentTile + new Vector2Int(Mathf.RoundToInt(normalisedDirection.x), Mathf.RoundToInt(normalisedDirection.y));
+
+        return grid.tileGrid[targetTile.x, targetTile.y].tileData.walkable;
+    }*/
 }
 

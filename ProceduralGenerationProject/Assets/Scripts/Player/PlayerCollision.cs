@@ -12,7 +12,7 @@ public class PlayerCollision : MonoBehaviour
         col = GetComponent<Collider2D>();
     }
 
-    public bool IsWalkable(Vector3 predictedCenter)
+   /* public bool IsWalkable(Vector3 predictedPos)
     {
         if (col == null) return true;
 
@@ -20,14 +20,14 @@ public class PlayerCollision : MonoBehaviour
         Bounds bounds = col.bounds;
 
         //Moves the collider to the next predicted tile's center
-        Vector3 offset = predictedCenter - transform.position;
+        Vector3 offset = predictedPos - transform.position;
         bounds.center += offset;
 
-        //Converts bound corners to ints for grid readability (+0.5f for allignment)
-        int minX = Mathf.FloorToInt(bounds.min.x + 0.5f);
-        int minY = Mathf.FloorToInt(bounds.min.y + 0.5f);
-        int maxX = Mathf.FloorToInt(bounds.max.x + 0.5f);
-        int maxY = Mathf.FloorToInt(bounds.max.y + 0.5f);
+        //Converts bound corners to ints for grid readability
+        int minX = (int)(bounds.min.x - 0.1f);
+        int minY = (int)(bounds.min.y - 0.1f);
+        int maxX = (int)(bounds.max.x + 0.1f);
+        int maxY = (int)(bounds.max.y + 0.1f);
 
         //Loop through potentially overlapping tiles
         for (int x = minX; x <= maxX; x++)
@@ -39,7 +39,7 @@ public class PlayerCollision : MonoBehaviour
                     return false;
                 }
 
-                if (!grid.noiseGrid[x, y].tileData.walkable)
+                if (!grid.tileGrid[x, y].tileData.walkable)
                 {
                     return false;
                 }
@@ -47,5 +47,5 @@ public class PlayerCollision : MonoBehaviour
         }
 
         return true;
-    }
+    }*/
 }

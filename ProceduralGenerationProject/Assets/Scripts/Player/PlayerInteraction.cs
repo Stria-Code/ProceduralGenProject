@@ -7,8 +7,10 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] GameObject buildMenu;
     [SerializeField] GameObject mapMenu;
     [SerializeField] GameObject map;
+    [SerializeField] int playerDamage;
     GridGenerator gridGenerator;
     MapConfig currentMap;
+    
 
     private void Awake()
     {
@@ -38,7 +40,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame )//&& gridGenerator.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
         {
-            ChangeTileWithClick(mousePos);
+            AttackTile(mousePos);
         }
     }
 
@@ -54,9 +56,19 @@ public class PlayerInteraction : MonoBehaviour
     }
 
 
-    void ChangeTileWithClick(Vector2 mousePos)
+    void AttackTile(Vector2 mousePos)
     {
-         gridGenerator.SetTileAtPos((int)mousePos.x, (int)mousePos.y, currentMap.mapData.tiles[(int)TileType.DeepWater]);
+        if (gridGenerator.tileGrid[(int)mousePos.x, (int)mousePos.y].tileData.canBeAttacked)
+        {
+            if (gridGenerator.tileGrid[(int)mousePos.x, (int)mousePos.y].tileData.health <= 0)
+            {
+                gridGenerator.SetTileAtPos((int)mousePos.x, (int)mousePos.y, currentMap.mapData.tiles[(int)TileType.Grass]);
+            }
 
+            if (gridGenerator.tileGrid[(int)mousePos.x, (int)mousePos.y].tileData.health > 0)
+            {
+                gridGenerator.tileGrid[(int)mousePos.x, (int)mousePos.y].tileData.health -= playerDamage;
+            }
+        }
     }
 }

@@ -51,7 +51,7 @@ public class ResourcesGen : MonoBehaviour
 
 
     void GrowResourceCluster(Vector2Int center, TileData resource, TileData biomeToCheck, int radius)
-    {
+    { 
         for (int x = -radius; x <= radius; x++)
         {
             for (int y = -radius; y <= radius; y++)
@@ -61,7 +61,7 @@ public class ResourcesGen : MonoBehaviour
 
                 if (!gridGenerator.CheckIfInBoundaries(nx, ny)) continue;
 
-                if (gridGenerator.noiseGrid[nx, ny].tileData.ID == biomeToCheck.ID)
+                if (gridGenerator.tileGrid[nx, ny].tileData.ID == biomeToCheck.ID)
                 {
                     //Calculate the diagonal distance
                     float distance = Mathf.Sqrt(x * x + y * y);
@@ -69,7 +69,7 @@ public class ResourcesGen : MonoBehaviour
                     //Only populate the space if the value is within the circle 
                     if (distance <= radius && Random.value > 0.3f) //added a chance to not spawn tiles so they are distributed unevenly
                     {
-                        gridGenerator.noiseGrid[nx, ny].tileData = resource;
+                        gridGenerator.tileGrid[nx, ny].tileData = resource;
                     }
                 }
             }

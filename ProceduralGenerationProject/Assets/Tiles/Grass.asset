@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   walkable: 1
-  walkSpeed: 0
+  walkSpeed: 5
   buildOnTop: 01000000
   health: 0
   colour: {r: 0.743402, g: 1, b: 0.504717, a: 1}
   image: {fileID: 0}
+  prefab: {fileID: 0}

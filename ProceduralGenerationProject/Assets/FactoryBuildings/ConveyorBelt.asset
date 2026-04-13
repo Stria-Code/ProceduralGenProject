@@ -12,11 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d736219b5bec733428ca3484c6016c83, type: 3}
   m_Name: ConveyorBelt
   m_EditorClassIdentifier: 
-  image: {fileID: 21300000, guid: 85c5e18aaeedeff4299072b8f0cda31c, type: 3}
-  name: Belt
-  prefab: {fileID: 3434285946455026608, guid: 57c9046e5cf322e46b9f724cb9e05971, type: 3}
+  tileData: {fileID: 11400000, guid: e5aab97560cc7d447903d2e0c707a9f9, type: 2}
   unlocked: 1
   cost: 0
-  canBuildOnWater: 0
-  canBuildOnLand: 0
-  canBuildOnResources: 0
