@@ -38,6 +38,11 @@ public class PlayerInteraction : MonoBehaviour
             ToggleMap();
         }
 
+        if ((Keyboard.current.escapeKey.wasPressedThisFrame))
+        {
+            Application.Quit();
+        }
+
         if (Mouse.current.leftButton.wasPressedThisFrame )//&& gridGenerator.noiseGrid[(int)mousePos.x, (int)mousePos.y].buildOnTop.Length > 0)
         {
             AttackTile(mousePos);
