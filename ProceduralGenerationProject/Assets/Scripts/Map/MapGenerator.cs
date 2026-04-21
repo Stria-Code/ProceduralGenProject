@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TileTypes;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -35,11 +34,9 @@ public class MapGenerator : MonoBehaviour
     {
         gridGenerator.CreateNoiseGrid();
         StartCoroutine(nameof(LateStart));
- 
-
-
     }
-      IEnumerator LateStart()
+
+    IEnumerator LateStart()
     {
         yield return new WaitForSeconds(1f);
         resourcesGen.ApplyResources();
@@ -62,22 +59,21 @@ public class MapGenerator : MonoBehaviour
 
         SpawnPlayer();
        
-         yield return null;
+        yield return null;
     }
+
     void CreateTile(TileData tile, int x, int y)
     {
-        //obj related 
+        //Obj related 
         GameObject g =  Instantiate(defaultTile);
         g.name = string.Format("tile_x{0}_y{1}", x, y);
         g.transform.localPosition = new Vector3(x, y, 0);
 
-
-       // link on a tile controller for tracking
         Tile t = g.AddComponent<Tile>();
         t.spriteRenderer = g.GetComponent<SpriteRenderer>();
         t.spriteRenderer.color = tile.colour;
         t.pos = new Vector2(x, y);   
-      //  t.tile.colour = tile.colour;  // seb, decide if you want to only change appearance or data in the tile obj
+   
 
         t.tileData = tile;
 
@@ -113,17 +109,14 @@ public class MapGenerator : MonoBehaviour
     //FloodFill algorithm to check for all the connected tiles of the same type in a cluster
     List<Vector2Int> FloodFill(int x, int y, int tileID, bool[,] visited)
     {
-        //List of tiles in a cluster
         List<Vector2Int> cluster = new List<Vector2Int>();
 
-        //Waiting list for checking tiles
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
 
-        //Start at the first tile and mark it as visited to avoid infinite looping
+        //Mark it as visited to avoid infinite looping
         queue.Enqueue(new Vector2Int(x, y));
         visited[x, y] = true;
 
-        //If there are tiles unchecked in the queue keep looping
         while (queue.Count > 0)
         {
             //Take a tile out of the queue and add it to the current cluster
@@ -137,10 +130,8 @@ public class MapGenerator : MonoBehaviour
 
                 if (!gridGenerator.CheckIfInBoundaries(newX, newY)) continue;
 
-                //If this tile has not been checked and is of the same type
                 if (!visited[newX, newY] && gridGenerator.tileGrid[newX, newY].tileData.ID == tileID)
                 {
-                    //Mark it as visited and add it to the queue to look at its neighbours later
                     visited[newX, newY] = true;
                     queue.Enqueue(new Vector2Int(newX, newY));
                 }

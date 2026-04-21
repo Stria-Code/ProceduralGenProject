@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c25fbad498f1f489976eaf7cb45f30, type: 3}
   m_Name: DefaultMap
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  minResAmount: 5
-  maxResAmount: 10
+  width: 300
+  height: 300
+  minResAmount: 20
+  maxResAmount: 30
   threshold:
   - 0
-  - 0.1
-  - 0.2
+  - 0.15
+  - 0.3
   tiles:
   - {fileID: 11400000, guid: e011fb4edd726804cbbf4bc2a08069d0, type: 2}
   - {fileID: 11400000, guid: 1b016d304ce1c71499feb800be3c99e2, type: 2}

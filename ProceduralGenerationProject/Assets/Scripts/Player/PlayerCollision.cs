@@ -12,7 +12,7 @@ public class PlayerCollision : MonoBehaviour
         col = GetComponent<Collider2D>();
     }
 
-   /* public bool IsWalkable(Vector3 predictedPos)
+    public bool IsWalkable(Vector3 predictedPos)
     {
         if (col == null) return true;
 
@@ -24,10 +24,10 @@ public class PlayerCollision : MonoBehaviour
         bounds.center += offset;
 
         //Converts bound corners to ints for grid readability
-        int minX = (int)(bounds.min.x - 0.1f);
-        int minY = (int)(bounds.min.y - 0.1f);
-        int maxX = (int)(bounds.max.x + 0.1f);
-        int maxY = (int)(bounds.max.y + 0.1f);
+        int minX = (int)(bounds.min.x + 0.45f);
+        int minY = (int)(bounds.min.y + 0.45f);
+        int maxX = (int)(bounds.max.x + 0.5f);
+        int maxY = (int)(bounds.max.y + 0.5f);
 
         //Loop through potentially overlapping tiles
         for (int x = minX; x <= maxX; x++)
@@ -47,5 +47,5 @@ public class PlayerCollision : MonoBehaviour
         }
 
         return true;
-    }*/
+    }
 }

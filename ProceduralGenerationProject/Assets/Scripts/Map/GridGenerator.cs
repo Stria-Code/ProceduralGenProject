@@ -44,7 +44,7 @@ public class GridGenerator : MonoBehaviour
 
     }
 
-    public void CreateNoiseGrid()// is 2nd pass 
+    public void CreateNoiseGrid()
     {
         //Create a 2D grid using perlin noise functon and storing it as IDs and gameobjects
         for (int x = 0; x < currentMap.mapData.width; x++)

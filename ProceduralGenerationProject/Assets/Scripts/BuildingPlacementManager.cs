@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Data;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class BuildingPlacementManager : MonoBehaviour
 {
@@ -74,12 +70,18 @@ public class BuildingPlacementManager : MonoBehaviour
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                InstantiateBuilding(mousePos);
+                InstantiateBuilding(mousePos, previewImage.transform);
             }
         }
         else
         {
             targetRenderer.color = Color.red;
+        }
+
+
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            previewImage.transform.Rotate(0, 0, -90);
         }
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
@@ -88,15 +90,17 @@ public class BuildingPlacementManager : MonoBehaviour
             Destroy(previewImage);
             Destroy(target);
         }
+
     }
 
-    void InstantiateBuilding(Vector2 worldPos)
+    void InstantiateBuilding(Vector2 worldPos, Transform previewImageTransform)
     {
-        worldPos.x = Mathf.Round(worldPos.x / 1);
-        worldPos.y = Mathf.Round(worldPos.y / 1);
+        worldPos.x = Mathf.Round(worldPos.x);
+        worldPos.y = Mathf.Round(worldPos.y);
 
 
         GameObject building = Instantiate(selectedBuilding.prefab, worldPos, Quaternion.identity);
+        building.transform.rotation = previewImageTransform.rotation;
         building.transform.SetParent(buildingsGroup);
     }
 }

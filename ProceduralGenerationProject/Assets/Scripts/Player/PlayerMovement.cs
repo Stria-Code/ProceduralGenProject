@@ -1,4 +1,3 @@
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -41,7 +40,13 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 predictedPos = transform.position + (Vector3)(velocity * Time.fixedDeltaTime);
 
-        if (grid.tileGrid[Mathf.FloorToInt(predictedPos.x), Mathf.FloorToInt(predictedPos.y)].tileData.walkSpeed > 0)
+       // if (grid.tileGrid[Mathf.FloorToInt(predictedPos.x), Mathf.FloorToInt(predictedPos.y)].tileData.walkSpeed > 0)
+       // {
+       //     rb.linearVelocity = velocity;
+       //     return;
+       // }
+
+        if(collisionController.IsWalkable(predictedPos))
         {
             rb.linearVelocity = velocity;
             return;
@@ -50,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
     }
 
-    /*public bool IsWalkable(Vector3 predictedPos)
+   /* public bool IsWalkable(Vector3 predictedPos)
     {
 
         Vector2Int currentTile = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));

@@ -1,6 +1,4 @@
 using TileTypes;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class PlayerSpawnGen : MonoBehaviour
