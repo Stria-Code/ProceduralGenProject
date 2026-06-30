@@ -40,7 +40,7 @@ public class PointsGen : MonoBehaviour
                 foreach (Vector2Int p in points)
                 {
                     float distance = Vector2Int.Distance(new Vector2Int(x, y), p);
-                    if (distance < minDist) minDist = distance; //Now next check is gonna be distance < previous distance
+                    if (distance < minDist) minDist = distance; //Now next check is distance < previous distance
                 }
 
 
